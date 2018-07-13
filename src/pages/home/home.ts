@@ -1,16 +1,21 @@
-import {Component} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {NavController, Platform} from 'ionic-angular';
-import {AdMobFree} from "@ionic-native/admob-free";
-import Utils from "../../utils/utils";
+import Utils, {apiUrl} from "../../utils/utils";
 import MatchUtils from "../../utils/match-utils";
 import {ScoreService} from "../../providers/score-service";
 import {MatchService} from "../../providers/match-service";
-import {StorageUtils} from "../../utils/storage-utils";
-import {LocalNotifications} from '@ionic-native/local-notifications';
 import {UserLeagueOverview} from "../../models/UserLeagueOverview";
 import {OverallLeagueOverview} from "../../models/OverallLeagueOverview";
 import {StandingsService} from "../../providers/standings-service";
 import {DataProvider} from "../../providers/data-provider";
+import {Storage} from "@ionic/storage";
+import {AdService} from "../../providers/ad-service";
+import {Subscription} from "rxjs/Subscription";
+import 'rxjs/add/observable/interval';
+import * as Stomp from 'stompjs';
+import * as SockJS from 'sockjs-client';
+import {HttpHeaders} from "@angular/common/http";
+import {NotificationService} from "../../providers/notification-service";
 
 @Component({
   selector: 'page-home',
@@ -28,17 +33,23 @@ export class HomePage {
   scoringDropdown = {open: false};
   upcomingMatches: any;
   leagues: any;
+  liveUpdates: Map<String, Subscription> = new Map();
+
+  private serverUrl = apiUrl + 'socket';
+  private stompClient;
+  private isConnected = false;
 
   constructor(private navCtrl: NavController,
-              private admob: AdMobFree,
-              private plt: Platform,
               private scoreService: ScoreService,
-              private storage: StorageUtils,
+              private storage: Storage,
               private matchService: MatchService,
-              private localNotifications: LocalNotifications,
               private standingsService: StandingsService,
-              private dataProvider: DataProvider) {
-    Utils.showBanner(this.plt, this.admob);
+              private dataProvider: DataProvider,
+              @Inject('moment') private moment,
+              private adService: AdService,
+              private notificationService: NotificationService,
+              private plt: Platform) {
+    this.adService.initAd();
     this.displayType = "scoring";
 
     if (MatchUtils.refreshData) {
@@ -53,38 +64,8 @@ export class HomePage {
     }
 
     this.plt.ready().then((readySource) => {
-      this.localNotifications.on('click').subscribe(notification => {
-        let data = notification.data;
-        this.goToPredictorPage(data.match);
-      });
+      this.notificationService.onNotificationClick(navCtrl);
     });
-  }
-
-  goToStandingsPage() {
-    this.navCtrl.parent.select(3);
-  }
-
-  goToPredictorPage(match?) {
-    if (match) {
-      this.dataProvider.predictionGroup = this.getCorrectPhase(match);
-    }
-    this.navCtrl.parent.select(1);
-  }
-
-  private getCorrectPhase(match) {
-    if (match.matchday == 4) {
-      return "Last 16"
-    } else if (match.matchday == 5) {
-      return "Quarter Final";
-    } else if (match.matchday == 6) {
-      return "Semi Final";
-    } else if (match.matchday == 7) {
-      return "3rd Place Play-Off";
-    } else if (match.matchday == 8) {
-      return "Final"
-    } else {
-      return "Group " + match.group;
-    }
   }
 
   private loadData(refresher?) {
@@ -131,10 +112,6 @@ export class HomePage {
       });
   }
 
-  toggleSection(section) {
-    section.open = !section.open;
-  }
-
   private loadUpcomingMatches(refresher?) {
     this.storage.get('token').then((token) => {
       this.matchService.retrieveUpcomingMatches(token).then((result) => {
@@ -161,9 +138,13 @@ export class HomePage {
 
         this.convertDateToLocalTime();
 
-        this.createNotifications();
+        this.notificationService.createNotifications(this.upcomingMatches);
 
         this.matchesRetrievable = true;
+
+        if (!this.isConnected) {
+          this.initializeWebSocketConnection();
+        }
 
         let token = this.data.headers.get('X-Auth-Token');
         this.storage.set('token', token);
@@ -185,55 +166,44 @@ export class HomePage {
   convertDateToLocalTime() {
     for(let i=0; i<this.upcomingMatches.length; i++){
       for(let j=0; j<this.upcomingMatches[i].matches.length; j++) {
-        const originalDate = this.upcomingMatches[i].matches[j].dateTime;
-        if (this.plt.is('ios')) {
-          this.upcomingMatches[i].matches[j].dateTime = new Date(originalDate);
-        } else {
-          this.upcomingMatches[i].matches[j].dateTime = MatchUtils.convertUTCDateToLocalDate(new Date(originalDate));
-        }
+        this.upcomingMatches[i].matches[j].dateTime = this.toDateTime(this.upcomingMatches[i].matches[j]);
       }
     }
   }
 
-  private async createNotifications() {
-    await this.storage.keys().then( async (keys) => {
-      if (!keys.includes("notify")) {
-        console.log("no");
-        await this.storage.set("notify", "true");
-      }
-    });
+  private toDateTime(match) {
+    const dateTime = match.formatted_date + ' ' + match.time;
+    return this.moment.utc(dateTime, 'DD.MM.YYYY HH:mm').format();
+  }
 
-    this.storage.get("notify").then((isNotified) => {
-      if (isNotified !== "false") {
-        this.scheduleNotifications();
-      }
-    }, (err) => {
-      this.storage.set("notify", "true");
+  private initializeWebSocketConnection() {
+    this.storage.get('token').then((token) => {
+      let ws = new SockJS(this.serverUrl);
+      this.stompClient = Stomp.over(ws);
+      let self = this;
+
+      const headers = new HttpHeaders()
+        .set("Content-Type", 'application/json')
+        .set("X-Auth-Token", token);
+
+      this.stompClient.connect({}, function (frame) {
+        self.stompClient.subscribe("/upcoming", (matches) => {
+          if (matches.body) {
+            const m: any[] = JSON.parse(matches.body);
+            m.forEach((match) => { self.updateMatch(match); });
+          }
+
+          self.isConnected = true;
+        }, headers);
+      });
     });
   }
 
-  private scheduleNotifications() {
-    for(let i=0; i<this.upcomingMatches.length; i++) {
+  private updateMatch(match) {
+    for (let i = 0; i < this.upcomingMatches.length; i++) {
       for (let j = 0; j < this.upcomingMatches[i].matches.length; j++) {
-        if (this.upcomingMatches[i].matches[j].hteam && this.upcomingMatches[i].matches[j].ateam) {
-          let d = new Date(this.upcomingMatches[i].matches[j].dateTime);
-          d.setHours(d.getHours() - 1);
-
-          const hTeam = this.upcomingMatches[i].matches[j].hteam;
-          const aTeam = this.upcomingMatches[i].matches[j].ateam;
-
-          const id = this.upcomingMatches[i].matches[j].id;
-          const title = hTeam + " vs " + aTeam + " - One hour to go!";
-          const text = "Make sure you've got your prediction in!";
-          const data = this.upcomingMatches[i].matches[j];
-          this.localNotifications.schedule({
-            id: id,
-            title: title,
-            text: text,
-            trigger: {at: d},
-            data: { match : data }
-          });
-          //new Date(new Date().getTime() + 5 * 1000)
+        if (this.upcomingMatches[i].matches[j].id === match.id) {
+          this.upcomingMatches[i].matches[j] = match;
         }
       }
     }
@@ -281,8 +251,44 @@ export class HomePage {
     });
   }
 
+
+  //---------- Methods only called from template - START
+
   private openLeague(league) {
     this.dataProvider.league = league;
     this.navCtrl.parent.select(3);
   }
+
+  private getTeamName(name) {
+    if (name == 'Wolverhampton Wanderers') {
+      return 'Wolves';
+    } else {
+      return name;
+    }
+  }
+
+  private getTimer(match) {
+    if (match.status === "FT" || match.status === "HT") {
+      return match.status;
+    } else {
+      return match.timer + "'";
+    }
+  }
+
+  private toggleSection(section) {
+    section.open = !section.open;
+  }
+
+  private goToStandingsPage() {
+    this.navCtrl.parent.select(3);
+  }
+
+  private goToPredictorPage(match?) {
+    if (match) {
+      this.dataProvider.week = match.week;
+    }
+    this.navCtrl.parent.select(1);
+  }
+
+  //---------- Methods only called from template - END
 }

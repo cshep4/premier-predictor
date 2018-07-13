@@ -1,14 +1,14 @@
 import {Component} from '@angular/core';
 
-import {AlertController, LoadingController, NavController, Platform, ToastController} from 'ionic-angular';
+import {AlertController, LoadingController, NavController, ToastController} from 'ionic-angular';
 import Utils from "../../utils/utils";
-import {AdMobFree} from "@ionic-native/admob-free";
 import {StandingsService} from "../../providers/standings-service";
 import {UserLeagueOverview} from "../../models/UserLeagueOverview";
 import {OverallLeagueOverview} from "../../models/OverallLeagueOverview";
 import {LeaguePage} from "../league/league";
-import {StorageUtils} from "../../utils/storage-utils";
 import {DataProvider} from "../../providers/data-provider";
+import {Storage} from "@ionic/storage";
+import {AdService} from "../../providers/ad-service";
 
 @Component({
   selector: 'page-standings',
@@ -24,12 +24,11 @@ export class StandingsPage {
               private standingsService: StandingsService,
               private loadingCtrl: LoadingController,
               private toastCtrl: ToastController,
-              private admob: AdMobFree,
-              private plt: Platform,
               private alertCtrl: AlertController,
-              private storage: StorageUtils,
-              private dataProvider: DataProvider) {
-    Utils.showBanner(this.plt, this.admob);
+              private storage: Storage,
+              private dataProvider: DataProvider,
+              private adService: AdService) {
+    this.adService.initAd();
   }
 
   ionViewDidEnter() {

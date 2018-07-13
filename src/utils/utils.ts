@@ -1,5 +1,4 @@
 import {HttpHeaders} from "@angular/common/http";
-import {AdMobFreeBannerConfig} from "@ionic-native/admob-free";
 
 export default class Utils {
   static refreshLeagues = false;
@@ -27,30 +26,6 @@ export default class Utils {
     });
 
     toast.present();
-  }
-
-  static showBanner(plt, admob) {
-    let id;
-    let atTop;
-    if (plt.is('ios')) {
-      id = 'ca-app-pub-8783352058311313/2155818570';
-      atTop = false;
-    } else {
-      id = 'ca-app-pub-8783352058311313/3760544283';
-      atTop = true;
-    }
-
-    let bannerConfig: AdMobFreeBannerConfig = {
-      autoShow: true,
-      id: id,
-      bannerAtTop: atTop
-    };
-
-    admob.banner.config(bannerConfig);
-
-    admob.banner.prepare().then(() => {
-      // success
-    }).catch(e => console.log(e));
   }
 
   static getRankWithSuffix(rank) {
@@ -91,10 +66,30 @@ export default class Utils {
       refresher.complete();
     }
   }
+
+  static getTeamName(name) {
+    if (name === "Wolverhampton Wanderers") {
+      return "Wolves";
+    } else if (name === "Brighton & Hove Albion") {
+      return "Brighton";
+    } else if (name === "Tottenham Hotspur") {
+      return "Tottenham";
+    } else if (name === "AFC Bournemouth") {
+      return "Bournemouth";
+    } else if (name === "Huddersfield Town") {
+      return "Huddersfield";
+    } else if (name === "Manchester United") {
+      return "Man United";
+    } else if (name === "Manchester City") {
+      return "Man City";
+    } else {
+      return name;
+    }
+  }
 }
 
 // export const apiUrl = 'http://localhost:8080/';
-export const apiUrl = 'https://wcpredictor.herokuapp.com/';
+export const apiUrl = 'https://premierpredictor.herokuapp.com/';
 
 export interface RequestOptions {
   headers?: HttpHeaders | { [header: string]: string | Array<string> };

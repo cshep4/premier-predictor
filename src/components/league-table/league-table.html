@@ -1,0 +1,64 @@
+ <ion-list no-margin>
+  <!-- Table headers -->
+  <ion-row class="v-center padding-8 header-background">
+    <ion-col class="center-text" col-1></ion-col>
+    <ion-col class="center-text" col-1></ion-col>
+    <ion-col class="center-text" col-4>
+      <strong>Team</strong>
+    </ion-col>
+    <ion-col class="center-text" col-1>
+      <strong>P</strong>
+    </ion-col>
+    <ion-col class="center-text" col-1>
+      <strong>W</strong>
+    </ion-col>
+    <ion-col class="center-text" col-1>
+      <strong>D</strong>
+    </ion-col>
+    <ion-col class="center-text" col-1>
+      <strong>L</strong>
+    </ion-col>
+    <ion-col class="center-text" col-1>
+      <strong>GD</strong>
+    </ion-col>
+    <ion-col class="center-text overflow-word" col-1>
+      <strong>Pts</strong>
+    </ion-col>
+  </ion-row>
+
+  <!-- Table data -->
+  <ion-row padding
+           class="v-center border-line no-vertical-padding"
+           *ngFor="let item of table; let k = index"
+           text-wrap
+           [ngStyle]="{'background': k == 0 ? '#FFF8E1' : k <= 3 ? '#E8F5E9' : k == 4 ? '#E8EAF6' : k >= 17 ? '#FBE9E7': '#f3f2f1'}">
+    <ion-col class="center-text" col-1>
+      {{ item.rank }}
+    </ion-col>
+    <ion-col class="center-text" col-1>
+      <img src="assets/img/{{item.teamName}}.png" class="flag" align="top">
+    </ion-col>
+    <ion-col class="center-text" col-4>
+      <b>{{ getTeamName(item.teamName) }}</b>
+    </ion-col>
+    <ion-col class="center-text" col-1>
+      {{ item.played }}
+    </ion-col>
+    <ion-col class="center-text" col-1>
+      {{ item.wins }}
+    </ion-col>
+    <ion-col class="center-text" col-1>
+      {{ item.draws }}
+    </ion-col>
+    <ion-col class="center-text" col-1>
+      {{ item.losses }}
+    </ion-col>
+    <ion-col class="center-text" col-1>
+      {{ item.goalDifference }}
+    </ion-col>
+    <ion-col class="center-text" col-1>
+      {{ item.points }}
+    </ion-col>
+
+  </ion-row>
+</ion-list>

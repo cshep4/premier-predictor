@@ -1,3 +1,29 @@
 page-account {
+  .accordion-list {
+    //background: color($colors, light);
+    height: 100%;
+  }
+  .section {
+    background: #fff;
+    color: #000;
+    margin-bottom: 4px;
+  }
+  .section-active {
+    background: color($colors, prem-purple);
+    color: #fff;
+  }
+
+  .remove-header-styling {
+    text-transform: none;
+    overflow-wrap: normal;
+    word-wrap: normal;
+    word-break: normal;
+    white-space: normal;
+  }
+
+  .grid {
+    margin: 0;
+    padding: 0;
+  }
 
 }

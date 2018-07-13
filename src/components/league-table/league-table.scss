@@ -1,0 +1,67 @@
+league-table {
+  .v-center {
+    display: flex;
+    align-content: center;
+    align-items: center;
+  }
+
+  .center-text {
+    text-align: center;
+    font-size: 3vw;
+  }
+
+  @media screen and (min-width: 467px) {
+    .center-text {
+      text-align: center;
+      font-size: 14px;
+    }
+  }
+
+  @media screen and (max-width: 350px) {
+    .center-text {
+      text-align: center;
+      font-size: 2.5vw
+    }
+  }
+
+  .header-background {
+    background: #f3f2f1;
+  }
+
+  .border-line {
+    border-bottom: 1px solid #D3D3D3;
+  }
+
+  .no-vertical-padding {
+    padding: 0 8px !important;
+  }
+
+  .padding-8 {
+    padding: 8px !important;
+  }
+
+  .flag {
+    max-width: 75%;
+    height: 5vw;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    object-fit: contain;
+  }
+
+  @media screen and (min-width: 467px) {
+    .flag {
+      max-width: 90px;
+      height: 30px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  .overflow-word {
+    overflow-wrap: normal;
+    word-wrap: normal;
+    word-break: keep-all;
+  }
+}

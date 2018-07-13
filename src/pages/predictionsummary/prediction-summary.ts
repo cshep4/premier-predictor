@@ -3,9 +3,10 @@ import {Component} from '@angular/core';
 import {LoadingController, NavParams, Platform, ToastController} from 'ionic-angular';
 import Utils from "../../utils/utils";
 import MatchUtils from "../../utils/match-utils";
-import {AdMobFree} from "@ionic-native/admob-free";
-import {StorageUtils} from "../../utils/storage-utils";
 import {MatchService} from "../../providers/match-service";
+import {Storage} from "@ionic/storage";
+import {Match} from "../../models/Match";
+import {AdService} from "../../providers/ad-service";
 
 @Component({
   selector: 'page-predictions-summary',
@@ -18,30 +19,21 @@ export class PredictionSummaryPage {
   userId: Number;
   firstName: String;
   score: Number;
+  view: any ="results";
 
   constructor(private matchService: MatchService,
               private loadingCtrl: LoadingController,
               private toastCtrl: ToastController,
-              private admob: AdMobFree,
               private plt: Platform,
-              private storage: StorageUtils,
-              private params: NavParams) {
+              private storage: Storage,
+              private params: NavParams,
+              private adService: AdService) {
 
     this.firstName = this.params.get('firstName');
     this.userId = this.params.get('userId');
     this.score = this.params.get('score');
 
-    let predictions = [{
-      name: "Group Stage",
-      standings: null
-    }, {
-      name: "Knockout Stage",
-      standings: null
-    }];
-
-    this.predictions = JSON.parse(JSON.stringify(predictions));
-
-    Utils.showBanner(this.plt, this.admob);
+    this.adService.initAd();
   }
 
   ionViewDidEnter() {
@@ -57,14 +49,22 @@ export class PredictionSummaryPage {
         Utils.dismissLoaders(this.loading, refresher);
         this.data = result;
 
-        this.predictions[0].standings = this.data.body.group;
-        this.predictions[1].standings = this.data.body.knockout;
+        this.predictions = this.data.body.matches.map(m => <Match>({
+          id: m.id,
+          predictionId: m.predictionId,
+          played: m.played,
+          group: m.group,
+          dateTime: m.dateTime,
+          matchday: m.matchday,
+          hTeam: m.hteam,
+          aTeam: m.ateam,
+          hGoals: m.hgoals,
+          aGoals: m.agoals
+        }));
+        console.log(this.data);
 
         this.convertDateToLocalTime();
-        this.predictions[0].standings.forEach(s => s.matches.sort(MatchUtils.compareDate));
-        this.predictions[1].standings.forEach(s => s.matches.sort(MatchUtils.compareDate));
-
-        console.log(this.predictions);
+        this.predictions.sort(MatchUtils.compareDate);
 
         let token = this.data.headers.get('X-Auth-Token');
         this.storage.set('token', token);
@@ -79,25 +79,12 @@ export class PredictionSummaryPage {
   }
 
   private convertDateToLocalTime() {
-    for(let i=0; i<this.predictions[0].standings.length; i++) {
-      for (let j = 0; j < this.predictions[0].standings[i].matches.length; j++) {
-        const originalDate = this.predictions[0].standings[i].matches[j].dateTime;
-        if (this.plt.is('ios')) {
-          this.predictions[0].standings[i].matches[j].dateTime = new Date(originalDate);
-        } else {
-          this.predictions[0].standings[i].matches[j].dateTime = MatchUtils.convertUTCDateToLocalDate(new Date(originalDate));
-        }
-      }
-    }
-
-    for(let i=0; i<this.predictions[1].standings.length; i++) {
-      for (let i = 0; i < this.predictions[1].standings[i].matches.length; i++) {
-        const originalDate = this.predictions[1].standings[i].matches[i].dateTime;
-        if (this.plt.is('ios')) {
-          this.predictions[1].standings[i].matches[i].dateTime = new Date(originalDate);
-        } else {
-          this.predictions[1].standings[i].matches[i].dateTime = MatchUtils.convertUTCDateToLocalDate(new Date(originalDate));
-        }
+    for(let i=0; i<this.predictions.length; i++) {
+      const originalDate = this.predictions[i].dateTime;
+      if (this.plt.is('ios')) {
+        this.predictions[i].dateTime = new Date(originalDate);
+      } else {
+        this.predictions[i].dateTime = MatchUtils.convertUTCDateToLocalDate(new Date(originalDate));
       }
     }
   }

@@ -1,14 +1,15 @@
 import {Component} from '@angular/core';
 
-import {App, LoadingController, Platform, ToastController} from 'ionic-angular';
+import {AlertController, App, LoadingController, ToastController} from 'ionic-angular';
 import {LoginPage} from "../login/login";
 import {AuthService} from "../../providers/auth-service";
 import Utils from "../../utils/utils";
-import {AdMobFree} from "@ionic-native/admob-free";
 import UserUtils from "../../utils/user-utils";
 import {AccountService} from "../../providers/account-service";
-import {StorageUtils} from "../../utils/storage-utils";
 import {LocalNotifications} from "@ionic-native/local-notifications";
+import {Storage} from "@ionic/storage";
+import {InAppPurchase} from "@ionic-native/in-app-purchase";
+import {AdService} from "../../providers/ad-service";
 
 @Component({
   selector: 'page-account',
@@ -25,18 +26,21 @@ export class AccountPage {
   doesPasswordContainNumbers = UserUtils.doesPasswordContainNumbers;
   doPasswordsMatch = UserUtils.doPasswordsMatch;
   isNotifications: boolean;
+  detailsDropdown = {open: false};
+  passwordDropdown = {open: false};
 
   constructor(private app: App,
               private authService: AuthService,
               private accountService: AccountService,
               private loadingCtrl: LoadingController,
               private toastCtrl: ToastController,
-              private admob: AdMobFree,
-              private plt: Platform,
-              private storage: StorageUtils,
-              private localNotifications: LocalNotifications) {
+              private storage: Storage,
+              private localNotifications: LocalNotifications,
+              private iap: InAppPurchase,
+              private alertCtrl: AlertController,
+              private adService: AdService) {
     this.loadAccountDetails();
-    Utils.showBanner(this.plt, this.admob);
+    this.adService.initAd();
 
     this.storage.get("notify").then((isNotified) => {
       this.isNotifications = isNotified === "true";
@@ -150,5 +154,67 @@ export class AccountPage {
       this.storage.set("notify", "false");
       this.localNotifications.cancelAll();
     }
+  }
+
+  private goAdFree() {
+    this.iap
+      .getProducts(['com.cshep4.premierpredictor.adFree'])
+      .then((products) => {
+        console.log(products);
+        const product = products[0];
+        this.showPurchasePrompt(product);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  private showPurchasePrompt(product) {
+      let title = 'Go Ad Free?';
+      let message = "Are you sure you want to go ad free for" + product.price + "?";
+
+      const prompt = this.alertCtrl.create({
+        title: title,
+        message: message,
+        buttons: [
+          {
+            text: 'Cancel'
+          },
+          {
+            text: 'Confirm',
+            handler: data => {
+              this.buyAdFree(product);
+            }
+          }
+        ]
+      });
+
+      prompt.present();
+  }
+
+  private buyAdFree(product) {
+    this.iap
+      .buy('com.cshep4.premierpredictor.adFree')
+      .then(function (data) {
+        this.updateUserForAdFree(data.transactionId);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  }
+
+  private updateUserForAdFree(transactionId) {
+    this.storage.set("adFree", "true");
+    this.adService.initAd();
+
+    this.storage.get('token').then((token) => {
+      this.storage.get('userId').then((userId) => {
+        this.accountService.updateUserForAdFree(userId, token, transactionId);
+      });
+    });
+  }
+
+  private restorePurchases() {
+    this.adService.restorePurchases();
   }
 }

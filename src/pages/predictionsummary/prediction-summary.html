@@ -1,12 +1,19 @@
 <ion-header>
-  <ion-navbar no-border-bottom color="russia-red">
+  <ion-navbar no-border-bottom color="prem-purple">
     <ion-title>
       {{ firstName }}'s Predictions
     </ion-title>
   </ion-navbar>
 
   <ion-toolbar no-border-top>
-    <ion-title>Points: {{ score }}</ion-title>
+    <ion-segment [(ngModel)]="view">
+      <ion-segment-button value="results">
+        Fixtures/Results
+      </ion-segment-button>
+      <ion-segment-button value="table">
+        League Table
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
@@ -14,7 +21,5 @@
   <ion-refresher (ionRefresh)="getPredictionSummary($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-list>
-    <predictions-accordion [predictions]="predictions"></predictions-accordion>
-  </ion-list>
+  <results [matches]="predictions" [view]="view"></results>
 </ion-content>

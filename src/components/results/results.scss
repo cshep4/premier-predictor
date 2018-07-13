@@ -1,4 +1,4 @@
-predictions-accordion {
+results {
   .v-center {
     display: flex;
     align-content: center;
@@ -7,12 +7,16 @@ predictions-accordion {
 
   .h-center {
     text-align: center;
-    font-size: 3vw;
+    font-size: 2.9vw;
+  }
+
+  .button-align {
+    text-align: center;
   }
 
   .team {
-    color: color($colors, russia-red);
-    font-size: 3vw;
+    color: color($colors, prem-purple);
+    font-size: 2.9vw;
   }
 
   @media screen and (min-width: 467px) {
@@ -22,48 +26,9 @@ predictions-accordion {
     }
 
     .team {
-      color: color($colors, russia-red);
+      color: color($colors, prem-purple);
       font-size: 14px;
     }
-  }
-
-  .grid {
-    margin: 0;
-    padding: 0;
-  }
-
-  .accordion-list {
-    background: color($colors, light);
-    height: 100%;
-  }
-  .section {
-    background: #fff;
-    color: #000;
-    margin-bottom: 4px;
-  }
-  .section-active {
-    background: color($colors, russia-red);
-    color: #fff;
-  }
-
-  .child {
-    background: #e8e7e6;
-    color: #000;
-    margin-bottom: 4px;
-  }
-  .child-item {
-    background: #f3f2f1;
-    padding: 10px;
-  }
-  .label {
-    margin: 0px;
-  }
-  .list {
-    margin-bottom: 4px;
-  }
-
-  .dashed-bottom {
-    border-bottom: 4px dashed;
   }
 
   .match {
@@ -76,17 +41,29 @@ predictions-accordion {
 
   .flag {
     max-width: 75%;
+    max-height: 12vw;
     display: block;
     margin-left: auto;
     margin-right: auto;
+    object-fit: contain;
   }
 
   @media screen and (min-width: 467px) {
     .flag {
       max-width: 90px;
+      max-height: 70px;
       display: block;
       margin-left: auto;
       margin-right: auto;
     }
+  }
+
+  .league-table {
+    background: #f3f2f1;
+  }
+
+  .grid {
+    margin: 0;
+    padding: 0;
   }
 }

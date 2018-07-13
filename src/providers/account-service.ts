@@ -67,4 +67,22 @@ export class AccountService {
     });
   }
 
+  updateUserForAdFree(id, token, transactionId) {
+    return new Promise((resolve, reject) => {
+      const headers = new HttpHeaders()
+        .set("Content-Type", 'application/json')
+        .set("X-Auth-Token", token);
+      const options: RequestOptions = { headers: headers, observe: "response" };
+      const body = { transactionId: transactionId };
+      const url = apiUrl + 'users/' + id;
+
+      this.http.put(url, body, options)
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject("Error retrieving account");
+        });
+    });
+  }
+
 }

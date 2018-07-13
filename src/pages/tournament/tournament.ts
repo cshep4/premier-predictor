@@ -2,146 +2,193 @@ import {Component} from '@angular/core';
 
 import {LoadingController, Platform, ToastController} from 'ionic-angular';
 import Utils from "../../utils/utils";
-import {TournamentService} from "../../providers/tournament-service";
 import MatchUtils from "../../utils/match-utils";
-import {AdMobFree} from "@ionic-native/admob-free";
-import {StorageUtils} from "../../utils/storage-utils";
+import {Storage} from "@ionic/storage";
+import {MatchService} from "../../providers/match-service";
+import {WheelSelector} from "@ionic-native/wheel-selector";
+import {Match} from "../../models/Match";
+import {AdService} from "../../providers/ad-service";
 
 @Component({
   selector: 'page-tournament',
   templateUrl: 'tournament.html'
 })
 export class TournamentPage {
-  standingsType;
-  currentTables: any[];
-  predictedTables: any[];
+  view;
+  filterargs = {week : "Recent Matches"};
+  week: any = "Recent Matches";
   loading: any;
   data: any;
   overlayHidden: boolean = true;
+  matches: any;
+  getTeamName = Utils.getTeamName;
 
-  constructor(private tournamentService: TournamentService,
+  constructor(private matchService: MatchService,
               private loadingCtrl: LoadingController,
               private toastCtrl: ToastController,
-              private admob: AdMobFree,
               private plt: Platform,
-              private storage: StorageUtils) {
-    this.standingsType = "current";
-
-    let standings = [{
-      name: "Group Stage",
-      standings: null
-    }, {
-      name: "Knockout Stage",
-      standings: null
-    }];
-
-    this.predictedTables = JSON.parse(JSON.stringify(standings));
-    this.currentTables = JSON.parse(JSON.stringify(standings));
-
-    Utils.showBanner(this.plt, this.admob);
+              private storage: Storage,
+              private selector: WheelSelector,
+              private adService: AdService) {
+    this.view = "results";
+    this.adService.initAd();
   }
 
   ionViewDidEnter() {
-    this.getStandings();
+    this.getResults();
   }
 
-  toggleOverlay() {
-    this.overlayHidden = !this.overlayHidden;
-  }
-
-  getStandings(refresher?) {
-    if (this.standingsType == "current") {
-      if (!this.currentTables[0].standings || refresher) {
-        this.getCurrentLeagueTable(refresher);
-      }
-    } else {
-      if (!this.predictedTables[0].standings || MatchUtils.refreshData  || refresher) {
-        this.getPredictedLeagueTable(refresher);
-      }
+  private getResults(refresher?) {
+    if (!this.matches || refresher) {
+      this.loadResults(refresher);
     }
   }
 
-  getCurrentLeagueTable(refresher?) {
+  private loadResults(refresher?) {
     if (!refresher) {
-      this.loading = Utils.showLoader('Loading Current Standings...', this.loadingCtrl);
+      this.loading = Utils.showLoader('Loading Fixtures/Results...', this.loadingCtrl);
     }
+
     this.storage.get('token').then((token) => {
-      this.tournamentService.retrieveCurrentLeagueTable(token).then((result) => {
+      this.matchService.retrieveMatches(token).then((result) => {
         Utils.dismissLoaders(this.loading, refresher);
         this.data = result;
 
-        this.currentTables[0].standings = this.data.body.standings;
-        this.currentTables[1].standings = this.data.body.knockoutStandings;
+        this.matches = this.data.body.map(m => <Match>({
+          id: m.id,
+          predictionId: m.predictionId,
+          played: m.played,
+          group: m.group,
+          dateTime: m.dateTime,
+          matchday: m.matchday,
+          hTeam: m.hteam,
+          aTeam: m.ateam,
+          hGoals: m.hgoals,
+          aGoals: m.agoals
+        }));
+
         this.convertDateToLocalTime();
-        this.currentTables[1].standings.matches.sort(MatchUtils.compareDate);
+        this.matches.sort(MatchUtils.compareDate);
 
         let token = this.data.headers.get('X-Auth-Token');
         this.storage.set('token', token);
       }, (err) => {
         Utils.dismissLoaders(this.loading, refresher);
-        Utils.presentToast("Error loading standings", this.toastCtrl);
+        Utils.presentToast("Error loading fixtures/results, please try again", this.toastCtrl);
       });
-    }, (err) => {
+    }, (error) => {
       Utils.dismissLoaders(this.loading, refresher);
-      Utils.presentToast("Error loading standings", this.toastCtrl);
+      Utils.presentToast("Error loading fixtures/results, please try again", this.toastCtrl);
     });
-  }
-
-  getPredictedLeagueTable(refresher?) {
-    if (!refresher) {
-      this.loading = Utils.showLoader('Loading Predicted Standings...', this.loadingCtrl);
-    }
-    this.storage.get('token').then((token) => {
-      this.storage.get('userId').then((userId) => {
-        this.tournamentService.retrievePredictedLeagueTable(token, userId).then((result) => {
-          Utils.dismissLoaders(this.loading, refresher);
-          this.data = result;
-
-          this.predictedTables[0].standings = this.data.body.standings;
-          this.predictedTables[1].standings = this.data.body.knockoutStandings;
-          this.convertPredictionsDateToLocalTime();
-          this.predictedTables[1].standings.forEach(s => s.matches.sort(MatchUtils.compareDate));
-          MatchUtils.refreshData = false;
-
-          let token = this.data.headers.get('X-Auth-Token');
-          this.storage.set('token', token);
-        }, (err) => {
-          Utils.dismissLoaders(this.loading, refresher);
-          Utils.presentToast("Error loading standings", this.toastCtrl);
-        });
-      }, (err) => {
-        Utils.dismissLoaders(this.loading, refresher);
-        Utils.presentToast("Error loading standings", this.toastCtrl);
-      });
-    }, (err) => {
-      Utils.dismissLoaders(this.loading, refresher);
-      Utils.presentToast("Error loading standings", this.toastCtrl);
-    });
-  }
-
-  private convertPredictionsDateToLocalTime() {
-    for(let i=0; i<this.predictedTables[1].standings.length; i++) {
-      for (let i = 0; i < this.predictedTables[1].standings[i].matches.length; i++) {
-        const originalDate = this.predictedTables[1].standings[i].matches[i].dateTime;
-        if (this.plt.is('ios')) {
-          this.predictedTables[1].standings[i].matches[i].dateTime = new Date(originalDate);
-        } else {
-          this.predictedTables[1].standings[i].matches[i].dateTime = MatchUtils.convertUTCDateToLocalDate(new Date(originalDate));
-        }
-      }
-    }
   }
 
   private convertDateToLocalTime() {
-    for(let i=0; i<this.currentTables[1].standings.length; i++) {
-      for (let j = 0; j < this.currentTables[1].standings[i].matches.length; j++) {
-        const originalDate = this.currentTables[1].standings[i].matches[j].dateTime;
-        if (this.plt.is('ios')) {
-          this.currentTables[1].standings[i].matches[j].dateTime = new Date(originalDate);
-        } else {
-          this.currentTables[1].standings[i].matches[j].dateTime = MatchUtils.convertUTCDateToLocalDate(new Date(originalDate));
-        }
+    for(let i=0; i<this.matches.length; i++){
+      const originalDate = this.matches[i].dateTime;
+      if (this.plt.is('ios')) {
+        this.matches[i].dateTime = new Date(originalDate);
+      } else {
+        this.matches[i].dateTime = MatchUtils.convertUTCDateToLocalDate(new Date(originalDate));
       }
     }
+  }
+
+  private selectWeek() {
+    this.selector.show({
+      title: "Matchday",
+      defaultItems: [
+        {
+          index : 0,
+          value: "Recent Matches"
+        }
+      ],
+      items: [
+        [
+          {description: "Recent Matches"},
+          {description: "Upcoming Matches"},
+          {description: "1"},
+          {description: "2"},
+          {description: "3"},
+          {description: "4"},
+          {description: "5"},
+          {description: "6"},
+          {description: "7"},
+          {description: "8"},
+          {description: "9"},
+          {description: "10"},
+          {description: "11"},
+          {description: "12"},
+          {description: "13"},
+          {description: "14"},
+          {description: "15"},
+          {description: "16"},
+          {description: "17"},
+          {description: "18"},
+          {description: "19"},
+          {description: "20"},
+          {description: "21"},
+          {description: "22"},
+          {description: "23"},
+          {description: "24"},
+          {description: "25"},
+          {description: "26"},
+          {description: "27"},
+          {description: "28"},
+          {description: "29"},
+          {description: "30"},
+          {description: "31"},
+          {description: "32"},
+          {description: "33"},
+          {description: "34"},
+          {description: "35"},
+          {description: "36"},
+          {description: "37"},
+          {description: "38"}
+        ]
+      ],
+    }).then(
+      result => {
+        this.week = result[0].description;
+        this.filterargs = {week: this.week};
+      },
+      err => console.log('Error: ', err)
+    );
+  }
+
+  private incrementWeek() {
+    if (this.week === "Recent Matches") {
+      this.week = "Upcoming Matches";
+    } else if (this.week === "Upcoming Matches") {
+      this.week = 1;
+    } else if (this.week != 38) {
+      this.week++;
+    }
+
+    this.filterargs = {week : this.week};
+  }
+
+  private decrementWeek() {
+    if (this.week == 1) {
+      this.week = 'Upcoming Matches';
+    } else if (this.week == "Upcoming Matches") {
+      this.week = 'Recent Matches';
+    } else if (this.week !== "Recent Matches") {
+      this.week--;
+    }
+
+    this.filterargs = {week : this.week};
+  }
+
+  private jumpToCurrentWeek() {
+    if (this.matches.filter(item => item.dateTime >= Date.now()).length == 0) {
+      this.week = 38;
+    } else {
+      this.week = this.matches.filter(item => item.dateTime >= Date.now())[0].matchday;
+    }
+    this.filterargs = {week: this.week};
+  }
+
+  private toggleOverlay() {
+    this.overlayHidden = !this.overlayHidden;
   }
 }

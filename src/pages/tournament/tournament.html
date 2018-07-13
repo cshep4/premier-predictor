@@ -1,42 +1,97 @@
 <ion-header>
-  <ion-navbar no-border-bottom color="russia-red">
+  <ion-navbar no-border-bottom color="prem-purple">
+    <ion-buttons start>
+      <button ion-button (click)="toggleOverlay()">
+        <i class="fa fa-question"></i>
+      </button>
+    </ion-buttons>
     <ion-title>
-      Standings
+      Results
     </ion-title>
   </ion-navbar>
 
   <ion-toolbar no-border-top>
-    <ion-segment [(ngModel)]="standingsType" (ionChange)="getStandings()">
-      <ion-segment-button value="current">
-        Real
+    <ion-segment [(ngModel)]="view">
+      <ion-segment-button value="results">
+        Fixtures/Results
       </ion-segment-button>
-      <ion-segment-button value="predicted">
-        Predicted
+      <ion-segment-button value="table">
+        League Table
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-refresher (ionRefresh)="getStandings($event)">
+  <ion-refresher (ionRefresh)="getResults($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <div [ngSwitch]="standingsType">
-    <ion-list *ngSwitchCase="'current'">
-      <standings-accordion [tables]="currentTables" [isReal]=true></standings-accordion>
+  <div [ngSwitch]="view">
+    <ion-list *ngSwitchCase="'results'">
+      <ion-row>
+        <ion-col col-2 class="button-align">
+          <button ion-button icon-only clear [disabled]="week === 'Recent Matches'" (click)="decrementWeek()">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+        </ion-col>
+        <ion-col col-6>
+          <button ion-button block icon-end clear (tap)="selectWeek()">
+            <span *ngIf="week !== 'Recent Matches' && week !== 'Upcoming Matches'">Matchday {{ week }}</span>
+            <span *ngIf="week === 'Recent Matches'">Recent</span>
+            <span *ngIf="week === 'Upcoming Matches'">Upcoming</span>
+            <ion-icon name="arrow-down"></ion-icon>
+          </button>
+        </ion-col>
+        <ion-col col-2 class="button-align">
+          <button ion-button clear icon-only (click)="jumpToCurrentWeek()">
+            <ion-icon name="contract"></ion-icon>
+          </button>
+        </ion-col>
+        <ion-col col-2 class="button-align">
+          <button ion-button icon-only clear [disabled]="week === 38" (click)="incrementWeek()">
+            <ion-icon name="arrow-forward"></ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+
+      <!--MATCHES - START -->
+      <ion-card *ngFor="let item of matches | matchfilter:filterargs" class="match">
+        <ion-list>
+          <ion-row text-center>
+            <ion-col class="h-center" col-12>
+              {{item.dateTime | date : "EEE, d MMMM yyyy, HH:mm" }}
+            </ion-col>
+          </ion-row>
+          <ion-row  text-center class="v-center">
+            <ion-col col-3 class="h-center team">
+              <img *ngIf="item.hTeam" src="assets/img/{{item.hTeam}}.png" class="flag" align="top">
+              {{ getTeamName(item.hTeam)  || "TBC" }}
+            </ion-col>
+            <ion-col col-2 class="h-center">
+              <span *ngIf='item.hGoals !== null'  > {{ item.hGoals }}</span>
+            </ion-col>
+            <ion-col col-2 class="h-center">
+              Vs.
+            </ion-col>
+            <ion-col class="h-center" col-2>
+              <span *ngIf='item.aGoals !== null'  > {{ item.aGoals }}</span>
+            </ion-col>
+            <ion-col col-3 class="h-center team">
+              <img *ngIf="item.aTeam" src="assets/img/{{item.aTeam}}.png" class="flag" align="top">
+              {{ getTeamName(item.aTeam)  || "TBC" }}
+            </ion-col>
+          </ion-row>
+        </ion-list>
+      </ion-card>
+      <!--MATCHES - END -->
     </ion-list>
 
-    <ion-list *ngSwitchCase="'predicted'">
-      <standings-accordion [tables]="predictedTables" [isReal]=false></standings-accordion>
+    <ion-list *ngSwitchCase="'table'">
+      <league-table [matches]="matches"></league-table>
     </ion-list>
   </div>
 
-  <ion-fab bottom right>
-    <button ion-fab (click)="toggleOverlay()">
-      <ion-icon ios="md-help" md="md-help"></ion-icon>
-    </button>
-  </ion-fab>
-
+  <!--OVERLAY - START -->
   <div class="my-overlay v-center" padding [hidden]="overlayHidden">
     <ion-list class="grid white-text">
       <ion-row>
@@ -44,7 +99,7 @@
           -
         </ion-col>
         <ion-col col-11>
-          Select the Real tab to view the actual tournament standings
+          Select the Results tab to view the current Premier League fixtures/results
         </ion-col>
       </ion-row>
       <ion-row>
@@ -52,9 +107,10 @@
           -
         </ion-col>
         <ion-col col-11>
-          Select the Predicted tab to view the tournament standings based on your own predictions
+          Select the League Table tab to view the current league table
         </ion-col>
       </ion-row>
     </ion-list>
   </div>
+  <!--OVERLAY - END -->
 </ion-content>

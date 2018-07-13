@@ -1,0 +1,63 @@
+<div [ngSwitch]="view">
+  <ion-list *ngSwitchCase="'results'">
+    <ion-row>
+      <ion-col col-2 class="button-align">
+        <button ion-button icon-only clear [disabled]="week === 'Recent Matches'" (click)="decrementWeek()">
+          <ion-icon name="arrow-back"></ion-icon>
+        </button>
+      </ion-col>
+      <ion-col col-6>
+        <button ion-button block icon-end clear (tap)="selectWeek()">
+          <span *ngIf="week !== 'Recent Matches'">Matchday {{ week }}</span>
+          <span *ngIf="week === 'Recent Matches'">Recent</span>
+          <ion-icon name="arrow-down"></ion-icon>
+        </button>
+      </ion-col>
+      <ion-col col-2 class="button-align">
+        <button ion-button clear icon-only (click)="jumpToCurrentWeek()">
+          <ion-icon name="contract"></ion-icon>
+        </button>
+      </ion-col>
+      <ion-col col-2 class="button-align">
+        <button ion-button icon-only clear [disabled]="week === 38" (click)="incrementWeek()">
+          <ion-icon name="arrow-forward"></ion-icon>
+        </button>
+      </ion-col>
+    </ion-row>
+
+    <!--MATCHES - START -->
+    <ion-card *ngFor="let item of matches | matchfilter:filterargs" class="match">
+      <ion-list>
+        <ion-row text-center>
+          <ion-col class="h-center" col-12>
+            {{item.dateTime | date : "EEE, d MMMM yyyy, HH:mm" }}
+          </ion-col>
+        </ion-row>
+        <ion-row  text-center class="v-center">
+          <ion-col col-3 class="h-center team">
+            <img *ngIf="item.hTeam" src="assets/img/{{item.hTeam}}.png" class="flag" align="top">
+            {{ getTeamName(item.hTeam)  || "TBC" }}
+          </ion-col>
+          <ion-col col-2 class="h-center">
+            <span *ngIf='item.hGoals !== null'  > {{ item.hGoals }}</span>
+          </ion-col>
+          <ion-col col-2 class="h-center">
+            Vs.
+          </ion-col>
+          <ion-col class="h-center" col-2>
+            <span *ngIf='item.aGoals !== null'  > {{ item.aGoals }}</span>
+          </ion-col>
+          <ion-col col-3 class="h-center team">
+            <img *ngIf="item.aTeam" src="assets/img/{{item.aTeam}}.png" class="flag" align="top">
+            {{ getTeamName(item.aTeam)  || "TBC" }}
+          </ion-col>
+        </ion-row>
+      </ion-list>
+    </ion-card>
+    <!--MATCHES - END -->
+  </ion-list>
+
+  <ion-list *ngSwitchCase="'table'">
+    <league-table [matches]="matches"></league-table>
+  </ion-list>
+</div>

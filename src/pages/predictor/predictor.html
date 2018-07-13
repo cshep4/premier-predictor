@@ -1,60 +1,98 @@
 <ion-header>
-  <ion-toolbar color="russia-red">
+  <ion-navbar color="prem-purple">
     <ion-buttons start>
-      <button ion-button (click)="presentPopover($event)">
-        <ion-label>Phase</ion-label>
-        <ion-icon name="arrow-down"></ion-icon>
+      <button ion-button (click)="toggleOverlay()">
+        <i class="fa fa-question"></i>
       </button>
     </ion-buttons>
-    <ion-title>{{this.phase}}</ion-title>
+    <ion-title>
+      Predictor
+    </ion-title>
     <ion-buttons end>
-      <button ion-button icon-only color="royal" (click)="save()">
-        <ion-icon name="checkmark"></ion-icon>
+      <button ion-button color="royal" (click)="save()">
+        <i class="fa fa-floppy-o"></i>
       </button>
     </ion-buttons>
+  </ion-navbar>
 
+  <ion-toolbar no-border-top>
+    <ion-segment [(ngModel)]="view">
+      <ion-segment-button value="predictions">
+        Predictions
+      </ion-segment-button>
+      <ion-segment-button value="table">
+        League Table
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
   <ion-refresher (ionRefresh)="loadMatchesWithPredictions($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-card *ngFor="let item of matches | matchfilter:filterargs">
-      <ion-list>
-        <ion-row text-center>
-          <ion-col class="h-center" col-12>
-            {{item.dateTime | date : "EEE, d MMMM yyyy, ha" }}
-          </ion-col>
-        </ion-row>
-        <ion-row  text-center class="v-center">
-          <ion-col col-3 class="h-center team" (tap)="selectGoals(item, item.hTeam, true)">
-            <img *ngIf="item.hTeam" src="assets/img/{{item.hTeam}}.png" class="flag" align="top">
-            {{ item.hTeam  || "TBC" }}
-          </ion-col>
-          <ion-col col-2 class="h-center score-input" (tap)="selectGoals(item, item.hTeam, true)">
-            <input [disabled]="hasDatePassed(item.dateTime)" readonly class="h-center" type="number" min="0" max="99" name="hg{{item.id}}" [(ngModel)]="item.hGoals">
-          </ion-col>
-          <ion-col col-2 class="h-center">
-            Vs.
-          </ion-col>
-          <ion-col col-2 class="h-center score-input" (tap)="selectGoals(item, item.aTeam, false)">
-            <input [disabled]="hasDatePassed(item.dateTime)" readonly class="h-center" type="number" min="0" max="99" name="ag{{item.id}}" [(ngModel)]="item.aGoals">
-          </ion-col>
-          <ion-col col-3 class="h-center team" (tap)="selectGoals(item, item.aTeam, false)">
-            <img *ngIf="item.aTeam" src="assets/img/{{item.aTeam}}.png" class="flag" align="top">
-            {{ item.aTeam  || "TBC" }}
-          </ion-col>
-        </ion-row>
-      </ion-list>
-  </ion-card>
+  <div [ngSwitch]="view">
+    <ion-list *ngSwitchCase="'predictions'">
+      <ion-row>
+        <ion-col col-2 class="button-align">
+          <button ion-button icon-only clear [disabled]="week === 'Upcoming Matches'" (click)="decrementWeek()">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+        </ion-col>
+        <ion-col col-6>
+          <button ion-button block icon-end clear (tap)="selectWeek()">
+            <span *ngIf="week !== 'Upcoming Matches'">Matchday {{ week }}</span>
+            <span *ngIf="week === 'Upcoming Matches'">Upcoming</span>
+            <ion-icon name="arrow-down"></ion-icon>
+          </button>
+        </ion-col>
+        <ion-col col-2 class="button-align">
+          <button ion-button clear icon-only (click)="jumpToCurrentWeek()">
+            <ion-icon name="contract"></ion-icon>
+          </button>
+        </ion-col>
+        <ion-col col-2 class="button-align">
+          <button ion-button icon-only clear [disabled]="week === 38" (click)="incrementWeek()">
+            <ion-icon name="arrow-forward"></ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+      <ion-card *ngFor="let item of matches | matchfilter:filterargs">
+        <ion-list>
+          <ion-row text-center>
+            <ion-col class="h-center" col-12>
+              {{item.dateTime | date : "EEE, d MMMM yyyy, HH:mm" }}
+            </ion-col>
+          </ion-row>
+          <ion-row  text-center class="v-center">
+            <ion-col col-3 class="h-center team" (tap)="selectGoals(item, item.hTeam, true)">
+              <img *ngIf="item.hTeam" src="assets/img/{{item.hTeam}}.png" class="flag" align="top">
+              {{ getTeamName(item.hTeam)  || "TBC" }}
+            </ion-col>
+            <ion-col col-2 class="h-center score-input" (tap)="selectGoals(item, item.hTeam, true)">
+              <input [disabled]="hasDatePassed(item.dateTime)" readonly class="h-center" type="number" min="0" max="99" name="hg{{item.id}}" [(ngModel)]="item.hGoals">
+            </ion-col>
+            <ion-col col-2 class="h-center">
+              Vs.
+            </ion-col>
+            <ion-col col-2 class="h-center score-input" (tap)="selectGoals(item, item.aTeam, false)">
+              <input [disabled]="hasDatePassed(item.dateTime)" readonly class="h-center" type="number" min="0" max="99" name="ag{{item.id}}" [(ngModel)]="item.aGoals">
+            </ion-col>
+            <ion-col col-3 class="h-center team" (tap)="selectGoals(item, item.aTeam, false)">
+              <img *ngIf="item.aTeam" src="assets/img/{{item.aTeam}}.png" class="flag" align="top">
+              {{ getTeamName(item.aTeam)  || "TBC" }}
+            </ion-col>
+          </ion-row>
+        </ion-list>
+      </ion-card>
+    </ion-list>
 
-  <ion-fab bottom right>
-    <button ion-fab (click)="toggleOverlay()">
-      <ion-icon ios="md-help" md="md-help"></ion-icon>
-    </button>
-  </ion-fab>
+    <ion-list *ngSwitchCase="'table'">
+      <league-table [matches]="matches"></league-table>
+    </ion-list>
+  </div>
 
+  <!--OVERLAY - START -->
   <div class="my-overlay v-center" padding [hidden]="overlayHidden">
     <ion-list class="grid white-text">
       <ion-row>
@@ -70,7 +108,7 @@
           -
         </ion-col>
         <ion-col col-11>
-          Tap the "Phase <ion-icon name="arrow-down"></ion-icon>" button to change between groups/knockout rounds
+          Use the arrow buttons to change between matchdays, or select a specific one by tapping on "<ion-icon name="arrow-down"></ion-icon>".
         </ion-col>
       </ion-row>
       <ion-row>
@@ -78,7 +116,7 @@
           -
         </ion-col>
         <ion-col col-11>
-          Tap the <ion-icon name="checkmark"></ion-icon> to save predictions
+          Tap the "<ion-icon name="contract"></ion-icon>" button to jump to the current matchday.
         </ion-col>
       </ion-row>
       <ion-row>
@@ -86,9 +124,26 @@
           -
         </ion-col>
         <ion-col col-11>
-          Predictions can be added/updated for each match (group and knockout) at any time up until the match kicks off.
+          Tap the <i class="fa fa-floppy-o"></i> to save predictions
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-1 align-self-center>
+          -
+        </ion-col>
+        <ion-col col-11>
+          Predictions can be added/updated for each match at any time up until the match kicks off.
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-1 align-self-center>
+          -
+        </ion-col>
+        <ion-col col-11>
+          The "League Table" tab will show the table based on your predictions.
         </ion-col>
       </ion-row>
     </ion-list>
   </div>
+  <!--OVERLAY - END -->
 </ion-content>

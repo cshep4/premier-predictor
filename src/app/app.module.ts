@@ -14,9 +14,8 @@ import {HttpClientModule} from '@angular/common/http';
 import {TournamentPage} from "../pages/tournament/tournament";
 import {AccountPage} from "../pages/account/account";
 import {MatchService} from "../providers/match-service";
-import {GroupFilter} from "../pipes/group-filter";
+import {GroupFilter} from "../pipes/match-filter";
 import {TournamentService} from "../providers/tournament-service";
-import {StandingsAccordion} from "../components/standings-accordion/standings-accordion";
 import {AdMobFree} from "@ionic-native/admob-free";
 import {ScoreService} from "../providers/score-service";
 import {StandingsService} from "../providers/standings-service";
@@ -27,16 +26,18 @@ import {Keyboard} from "ionic-native";
 import {WheelSelector} from "@ionic-native/wheel-selector";
 import {IonicStorageModule} from "@ionic/storage";
 import {ResetPasswordPage} from "../pages/resetpassword/resetpassword";
-import {NativeStorage} from "@ionic-native/native-storage";
-import {StorageUtils} from "../utils/storage-utils";
 import {PredictionSummaryPage} from "../pages/predictionsummary/prediction-summary";
-import {PredictionsAccordion} from "../components/predictions-accordion/predictions-accordion";
-import {ResultsPage} from "../pages/results/results";
 import {Rules} from "../components/rules/rules";
 import {Scoring} from "../components/scoring/scoring";
 import {ScrollCatcherDirective} from "../directive/scroll-catcher-directive";
 import {LocalNotifications} from '@ionic-native/local-notifications';
 import {DataProvider} from "../providers/data-provider";
+import * as moment from 'moment';
+import {LeagueTable} from "../components/league-table/league-table";
+import {Results} from "../components/results/results";
+import {InAppPurchase} from "@ionic-native/in-app-purchase";
+import {AdService} from "../providers/ad-service";
+import {NotificationService} from "../providers/notification-service";
 
 @NgModule({
   declarations: [
@@ -51,15 +52,14 @@ import {DataProvider} from "../providers/data-provider";
     RegisterPage,
     GroupPopover,
     GroupFilter,
-    StandingsAccordion,
     ResetPasswordPage,
     LeaguePage,
     PredictionSummaryPage,
-    PredictionsAccordion,
-    ResultsPage,
     Rules,
     Scoring,
-    ScrollCatcherDirective
+    ScrollCatcherDirective,
+    LeagueTable,
+    Results
   ],
   imports: [
     IonicModule.forRoot(MyApp, {
@@ -85,8 +85,7 @@ import {DataProvider} from "../providers/data-provider";
     GroupPopover,
     ResetPasswordPage,
     LeaguePage,
-    PredictionSummaryPage,
-    ResultsPage
+    PredictionSummaryPage
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
@@ -100,10 +99,12 @@ import {DataProvider} from "../providers/data-provider";
     Clipboard,
     Keyboard,
     WheelSelector,
-    NativeStorage,
-    StorageUtils,
     LocalNotifications,
-    DataProvider
+    DataProvider,
+    { provide: 'moment', useValue: moment },
+    InAppPurchase,
+    AdService,
+    NotificationService
   ]
 })
 export class AppModule {}

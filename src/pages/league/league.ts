@@ -1,20 +1,12 @@
-import {
-  AlertController,
-  Content,
-  LoadingController,
-  NavController,
-  NavParams,
-  Platform,
-  ToastController
-} from "ionic-angular";
-import {AdMobFree} from "@ionic-native/admob-free";
+import {AlertController, Content, LoadingController, NavController, NavParams, ToastController} from "ionic-angular";
 import {Component, ViewChild} from "@angular/core";
 import Utils from "../../utils/utils";
 import {StandingsService} from "../../providers/standings-service";
 import {LeagueTablePlayer} from "../../models/LeagueTablePlayer";
 import {Clipboard} from "@ionic-native/clipboard";
-import {StorageUtils} from "../../utils/storage-utils";
 import {PredictionSummaryPage} from "../predictionsummary/prediction-summary";
+import {Storage} from "@ionic/storage";
+import {AdService} from "../../providers/ad-service";
 
 @Component({
   selector: 'page-league',
@@ -35,18 +27,17 @@ export class LeaguePage {
   constructor(private navCtrl: NavController,
               private loadingCtrl: LoadingController,
               private toastCtrl: ToastController,
-              private admob: AdMobFree,
-              private plt: Platform,
               private params: NavParams,
               private standingsService: StandingsService,
               private alertCtrl: AlertController,
               private clipboard: Clipboard,
-              private storage: StorageUtils) {
+              private storage: Storage,
+              private adService: AdService) {
     this.leagueOverview = this.params.get('league');
     this.storage.get('userId').then((userId) => {
       this.userId = Number(userId);
     });
-    Utils.showBanner(this.plt, this.admob);
+    this.adService.initAd();
     this.loadLeagueTable();
   }
 

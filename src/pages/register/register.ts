@@ -1,11 +1,11 @@
 import {Component} from '@angular/core';
-import {LoadingController, NavController, Platform, ToastController} from 'ionic-angular';
+import {LoadingController, NavController, ToastController} from 'ionic-angular';
 import {AuthService} from '../../providers/auth-service';
 import {TabsPage} from "../tabs/tabs";
 import Utils from "../../utils/utils";
-import {AdMobFree} from "@ionic-native/admob-free";
 import UserUtils from "../../utils/user-utils";
-import {StorageUtils} from "../../utils/storage-utils";
+import {Storage} from "@ionic/storage";
+import {AdService} from "../../providers/ad-service";
 
 @Component({
     selector: 'page-register',
@@ -25,10 +25,9 @@ export class RegisterPage {
                 private authService: AuthService,
                 private loadingCtrl: LoadingController,
                 private toastCtrl: ToastController,
-                private admob: AdMobFree,
-                private plt: Platform,
-                private storage: StorageUtils) {
-      Utils.showBanner(this.plt, this.admob);
+                private storage: Storage,
+                private adService: AdService) {
+      this.adService.initAd();
     }
 
     doSignup() {

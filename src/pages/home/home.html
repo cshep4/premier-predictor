@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar color="russia-red" class="white-spinner">
+  <ion-navbar color="prem-purple" class="white-spinner">
     <ion-buttons left>
 
       <button *ngIf="scoreRetrievable" ion-button [disabled]="!rank" (click)="goToStandingsPage()">
@@ -21,7 +21,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <div padding><h2 class="title-font">WC 2018 Predictor</h2></div>
+  <div padding><h2 class="title-font">Premier Predictor 18/19</h2></div>
 
   <ion-list>
     <ion-list class="accordion-list">
@@ -72,20 +72,44 @@
           </ion-item-divider>
           <ion-item *ngFor="let match of item.matches" (tap)="goToPredictorPage(match)" class="border-line">
             <ion-row class="v-center">
-              <ion-col col-3 class="h-center">
-                {{ match.hteam  || "TBC" }}
+              <ion-col col-2-5 class="team-name remove-header-styling">
+                {{ getTeamName(match.localteam_name)  || "TBC" }}
               </ion-col>
               <ion-col col-2>
-                <img *ngIf="match.hteam" src="assets/img/{{match.hteam}}.png" class="flag" align="top">
+                <img *ngIf="match.localteam_name" src="assets/img/{{match.localteam_name}}.png" class="flag" align="top">
               </ion-col>
-              <ion-col col-2 class="h-center">
-                {{match.dateTime | date : "ha" }}
+
+              <!-- MATCH TIME - START -->
+              <ion-col col-3 class="team-name" *ngIf="!match.status">
+                {{match.dateTime | date : "HH:mm" }}
               </ion-col>
+              <!-- MATCH TIME - END -->
+              <!-- LIVE MATCH - START -->
+              <ion-col col-1
+                       class="team-name"
+                       [ngStyle]="{'color': match.status != 'FT' && match.status != 'HT' ? 'red' : 'black'}"
+                       *ngIf="match.status">
+                {{ getTeamName(match.localteam_score)  || 0 }}
+              </ion-col>
+              <ion-col col-1
+                       class="team-name"
+                       [ngStyle]="{'color': match.status != 'FT' && match.status != 'HT' ? 'red' : 'black'}"
+                       *ngIf="match.status">
+                {{ getTimer(match) }}
+              </ion-col>
+              <ion-col col-1
+                       class="team-name"
+                       [ngStyle]="{'color': match.status != 'FT' && match.status != 'HT' ? 'red' : 'black'}"
+                       *ngIf="match.status">
+                {{ getTeamName(match.visitorteam_score)  || 0 }}
+              </ion-col>
+              <!-- LIVE MATCH - END -->
+
               <ion-col col-2>
-                <img *ngIf="match.ateam" src="assets/img/{{match.ateam}}.png" class="flag" align="top">
+                <img *ngIf="match.visitorteam_name" src="assets/img/{{match.visitorteam_name}}.png" class="flag" align="top">
               </ion-col>
-              <ion-col col-3 class="h-center">
-                {{ match.ateam  || "TBC" }}
+              <ion-col col-2-5 class="team-name remove-header-styling">
+                {{ getTeamName(match.visitorteam_name)  || "TBC" }}
               </ion-col>
             </ion-row>
           </ion-item>
