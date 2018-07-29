@@ -38,6 +38,15 @@ import {Results} from "../components/results/results";
 import {InAppPurchase} from "@ionic-native/in-app-purchase";
 import {AdService} from "../providers/ad-service";
 import {NotificationService} from "../providers/notification-service";
+import {MatchPage} from "../pages/match/match";
+import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
+import {ProgressBar} from "../components/progress-bar/progress-bar";
+import {MatchStats} from "../components/match-stats/match-stats";
+import {MatchStat} from "../components/match-stat/match-stat";
+import {MatchPredictionSummary} from "../components/match-prediction-summary/match-prediction-summary";
+import {Lineup} from "../components/lineup/lineup";
+import {MatchEvents} from "../components/match-events/match-events";
+import {Commentary} from "../components/commentary/commentary";
 
 @NgModule({
   declarations: [
@@ -59,7 +68,15 @@ import {NotificationService} from "../providers/notification-service";
     Scoring,
     ScrollCatcherDirective,
     LeagueTable,
-    Results
+    Results,
+    MatchPage,
+    ProgressBar,
+    MatchStats,
+    MatchStat,
+    MatchPredictionSummary,
+    Lineup,
+    MatchEvents,
+    Commentary
   ],
   imports: [
     IonicModule.forRoot(MyApp, {
@@ -85,7 +102,8 @@ import {NotificationService} from "../providers/notification-service";
     GroupPopover,
     ResetPasswordPage,
     LeaguePage,
-    PredictionSummaryPage
+    PredictionSummaryPage,
+    MatchPage
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
@@ -104,7 +122,8 @@ import {NotificationService} from "../providers/notification-service";
     { provide: 'moment', useValue: moment },
     InAppPurchase,
     AdService,
-    NotificationService
+    NotificationService,
+    FirebaseAnalytics
   ]
 })
 export class AppModule {}

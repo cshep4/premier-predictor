@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 
-import {LoadingController, Platform, ToastController} from 'ionic-angular';
+import {LoadingController, NavController, Platform, ToastController} from 'ionic-angular';
 import Utils from "../../utils/utils";
 import MatchUtils from "../../utils/match-utils";
 import {Storage} from "@ionic/storage";
@@ -8,6 +8,8 @@ import {MatchService} from "../../providers/match-service";
 import {WheelSelector} from "@ionic-native/wheel-selector";
 import {Match} from "../../models/Match";
 import {AdService} from "../../providers/ad-service";
+import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
+import {MatchPage} from "../match/match";
 
 @Component({
   selector: 'page-tournament',
@@ -29,13 +31,18 @@ export class TournamentPage {
               private plt: Platform,
               private storage: Storage,
               private selector: WheelSelector,
-              private adService: AdService) {
+              private adService: AdService,
+              private firebaseAnalytics: FirebaseAnalytics,
+              private navCtrl: NavController) {
     this.view = "results";
     this.adService.initAd();
   }
 
   ionViewDidEnter() {
     this.getResults();
+
+    this.firebaseAnalytics.setCurrentScreen("Results");
+    this.firebaseAnalytics.logEvent('page_view', {page: "Results"});
   }
 
   private getResults(refresher?) {
@@ -190,5 +197,9 @@ export class TournamentPage {
 
   private toggleOverlay() {
     this.overlayHidden = !this.overlayHidden;
+  }
+
+  private goToMatchPage(matchId) {
+    this.navCtrl.push(MatchPage, { 'matchId': matchId });
   }
 }

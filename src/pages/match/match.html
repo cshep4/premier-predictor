@@ -1,0 +1,164 @@
+<ion-header>
+  <ion-navbar color="prem-purple">
+    <ion-title>
+      Match
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher (ionRefresh)="loadMatch($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-card *ngIf="match" class="match">
+    <ion-list>
+      <ion-row text-center>
+        <ion-col col-4 class="h-center team">
+          <ion-row>
+            <ion-col no-padding padding-vertical class="h-center">
+              <img *ngIf="match.localteam_name" src="assets/img/{{match.localteam_name}}.png" class="flag" align="top">
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col no-padding class="h-center team">
+              {{ match.localteam_name  || "TBC" }}
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col class="h-center" col-4>
+          <ion-row>
+            <ion-col class="h-center">
+              {{match.dateTime | date : "d/MM/yyyy HH:mm" }}
+            </ion-col>
+          </ion-row>
+          <ion-row class="v-center">
+            <ion-col col-4 class="h-center score" [ngStyle]="{'color': match.status != 'FT' && match.status != 'HT' ? 'red' : 'black'}">
+              {{ match.localteam_score }}
+            </ion-col>
+            <ion-col col-4
+                     class="h-center"
+                     [ngStyle]="{'color': match.status != 'FT' && match.status != 'HT' ? 'red' : 'black'}"
+                     *ngIf="match.status">
+              {{ getTimer(match) }}
+            </ion-col>
+            <ion-col col-4 *ngIf="!match.status">
+            </ion-col>
+            <ion-col col-4 class="h-center score" [ngStyle]="{'color': match.status != 'FT' && match.status != 'HT' ? 'red' : 'black'}">
+              {{ match.visitorteam_score }}
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="h-center venue">
+              {{ match.venue }}
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col col-4 class="h-center team">
+          <ion-row>
+            <ion-col no-padding padding-vertical class="h-center">
+              <img *ngIf="match.visitorteam_name" src="assets/img/{{match.visitorteam_name}}.png" class="flag" align="top">
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col no-padding class="h-center team">
+              {{ match.visitorteam_name  || "TBC" }}
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+      <!--<ion-row text-center>-->
+        <!--<ion-col col-4 class="h-center team">-->
+          <!--{{ match.localteam_name || "TBC" }}-->
+        <!--</ion-col>-->
+        <!--<ion-col class="h-center" col-4>-->
+
+        <!--</ion-col>-->
+        <!--<ion-col col-4 class="h-center team">-->
+          <!--{{ match.visitorteam_name  || "TBC" }}-->
+        <!--</ion-col>-->
+      <!--</ion-row>-->
+    </ion-list>
+  </ion-card>
+
+  <ion-list *ngIf="match">
+    <ion-list class="accordion-list">
+      <!-- Prediction -->
+      <ion-list-header class="grey-background" no-lines no-padding no-margin>
+        <!-- Toggle Button -->
+        <button ion-item (click)="toggleSection(predictionDropdown)" detail-none [ngClass]="{'section-active': predictionDropdown.open, 'section': !predictionDropdown.open}">
+          <ion-icon item-left name="arrow-forward" *ngIf="!predictionDropdown.open"></ion-icon>
+          <ion-icon item-left name="arrow-down" *ngIf="predictionDropdown.open"></ion-icon>
+          Prediction
+        </button>
+
+        <ion-list *ngIf="predictionDropdown.open" no-lines>
+          <match-prediction-summary [matchPredictionSummary]="matchPredictionSummary"
+                                    [prediction]="prediction"
+                                    [dateTime]="match.dateTime"
+                                    [hTeam]="match.localteam_name"
+                                    [aTeam]="match.visitorteam_name"
+                                    class="remove-header-styling grey-background"
+                                    no-margin>
+          </match-prediction-summary>
+        </ion-list>
+      </ion-list-header>
+
+      <!-- Match Stats -->
+      <ion-list-header no-lines class="grey-background" no-padding no-margin>
+        <!-- Toggle Button -->
+        <button ion-item (click)="toggleSection(statsDropdown)" detail-none [ngClass]="{'section-active': statsDropdown.open, 'section': !statsDropdown.open}">
+          <ion-icon item-left name="arrow-forward" *ngIf="!statsDropdown.open"></ion-icon>
+          <ion-icon item-left name="arrow-down" *ngIf="statsDropdown.open"></ion-icon>
+          Match Stats
+        </button>
+
+        <ion-list *ngIf="statsDropdown.open && match.commentary" no-lines padding-vertical>
+          <match-stats [match]="match" class="width-no-margin remove-header-styling grey-background"></match-stats>
+        </ion-list>
+      </ion-list-header>
+
+      <!-- Match Events -->
+      <ion-list-header no-lines class="grey-background" no-padding no-margin>
+        <!-- Toggle Button -->
+        <button ion-item (click)="toggleSection(eventsDropdown)" detail-none [ngClass]="{'section-active': eventsDropdown.open, 'section': !eventsDropdown.open}">
+          <ion-icon item-left name="arrow-forward" *ngIf="!eventsDropdown.open"></ion-icon>
+          <ion-icon item-left name="arrow-down" *ngIf="eventsDropdown.open"></ion-icon>
+          Match Events
+        </button>
+
+        <ion-list *ngIf="eventsDropdown.open && match.events.length > 0" no-lines padding padding-vertical>
+          <match-events [events]="match.events" class="remove-header-styling"></match-events>
+        </ion-list>
+      </ion-list-header>
+
+      <!-- Commentary -->
+      <ion-list-header no-lines class="grey-background" no-padding no-margin>
+        <!-- Toggle Button -->
+        <button ion-item (click)="toggleSection(commentaryDropdown)" detail-none [ngClass]="{'section-active': commentaryDropdown.open, 'section': !commentaryDropdown.open}">
+          <ion-icon item-left name="arrow-forward" *ngIf="!commentaryDropdown.open"></ion-icon>
+          <ion-icon item-left name="arrow-down" *ngIf="commentaryDropdown.open"></ion-icon>
+          Commentary
+        </button>
+
+        <ion-list *ngIf="commentaryDropdown.open && match.commentary && match.commentary.comments.length > 0" no-lines padding>
+          <commentary [comments]="match.commentary.comments" class="remove-header-styling"></commentary>
+        </ion-list>
+      </ion-list-header>
+
+      <!-- Lineups -->
+      <ion-list-header no-lines class="grey-background" no-padding no-margin>
+        <!-- Toggle Button -->
+        <button ion-item (click)="toggleSection(lineupDropdown)" detail-none [ngClass]="{'section-active': lineupDropdown.open, 'section': !lineupDropdown.open}">
+          <ion-icon item-left name="arrow-forward" *ngIf="!lineupDropdown.open"></ion-icon>
+          <ion-icon item-left name="arrow-down" *ngIf="lineupDropdown.open"></ion-icon>
+          Lineups
+        </button>
+
+        <ion-list *ngIf="lineupDropdown.open && match.commentary" no-lines padding>
+          <lineup [lineup]="match.commentary.lineup" [subs]="match.commentary.subs" class="remove-header-styling"></lineup>
+        </ion-list>
+      </ion-list-header>
+
+    </ion-list>
+  </ion-list>
+</ion-content>

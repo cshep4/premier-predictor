@@ -1,0 +1,131 @@
+lineup {
+  .v-center {
+    display: flex;
+    align-content: center;
+    align-items: center;
+  }
+
+  .border-line {
+    border-bottom: 1px solid #D3D3D3;
+  }
+
+  .no-vertical-padding {
+    padding: 0 !important;
+  }
+
+  .name {
+    font-size: 2.5vw;
+    word-wrap: normal;
+  }
+
+  @media screen and (min-width: 467px) {
+    .name {
+      font-size: 14px;
+    }
+  }
+
+  .p-2 {
+    padding: 8px 0px;
+  }
+
+
+  [col-0-5]{
+    padding:1px
+  }
+  @media (min-width:576px){
+    [col-0-5]{
+      padding:1px
+    }
+  }
+  @media (min-width:768px){
+    [col-0-5]{
+      padding:1px
+    }
+  }
+  @media (min-width:992px){
+    [col-0-5]{
+      padding:1px
+    }
+  }
+  @media (min-width:1200px){
+    [col-0-5]{
+      padding:1px
+    }
+  }
+  [col-0-5]{
+    -webkit-box-flex:0;
+    -webkit-flex:0 0 4.166666666%;
+    -ms-flex:0 0 4.166666666%;
+    flex:0 0 4.166666666%;
+    width:4.166666666%;
+    max-width:4.166666666%
+  }
+
+  [col-5-5]{
+    padding:6px
+  }
+  @media (min-width:576px){
+    [col-5-5]{
+      padding:6px
+    }
+  }
+  @media (min-width:768px){
+    [col-5-5]{
+      padding:6px
+    }
+  }
+  @media (min-width:992px){
+    [col-5-5]{
+      padding:6px
+    }
+  }
+  @media (min-width:1200px){
+    [col-5-5]{
+      padding:6px
+    }
+  }
+  [col-5-5]{
+    -webkit-box-flex:0;
+    -webkit-flex:0 0 45.8333333333%;
+    -ms-flex:0 0 45.8333333333%;
+    flex:0 0 45.8333333333%;
+    width:45.8333333333%;
+    max-width:45.8333333333%
+  }
+
+  [col-4-5]{
+    padding:6px
+  }
+  @media (min-width:576px){
+    [col-4-5]{
+      padding:6px
+    }
+  }
+  @media (min-width:768px){
+    [col-4-5]{
+      padding:6px
+    }
+  }
+  @media (min-width:992px){
+    [col-4-5]{
+      padding:6px
+    }
+  }
+  @media (min-width:1200px){
+    [col-4-5]{
+      padding:6px
+    }
+  }
+  [col-4-5]{
+    -webkit-box-flex:0;
+    -webkit-flex:0 0 37.5%;
+    -ms-flex:0 0 37.5%;
+    flex:0 0 37.5%;
+    width:37.5%;
+    max-width:37.5%
+  }
+
+  .p-t-8 {
+    padding-top: 8px;
+  }
+}

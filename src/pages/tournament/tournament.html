@@ -55,7 +55,7 @@
       </ion-row>
 
       <!--MATCHES - START -->
-      <ion-card *ngFor="let item of matches | matchfilter:filterargs" class="match">
+      <ion-card *ngFor="let item of matches | matchfilter:filterargs" class="match" (tap)="goToMatchPage(item.id)">
         <ion-list>
           <ion-row text-center>
             <ion-col class="h-center" col-12>
@@ -108,6 +108,14 @@
         </ion-col>
         <ion-col col-11>
           Select the League Table tab to view the current league table
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-1 align-self-center>
+          -
+        </ion-col>
+        <ion-col col-11>
+          Click on a match to view match summary
         </ion-col>
       </ion-row>
     </ion-list>

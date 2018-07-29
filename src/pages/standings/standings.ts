@@ -9,6 +9,7 @@ import {LeaguePage} from "../league/league";
 import {DataProvider} from "../../providers/data-provider";
 import {Storage} from "@ionic/storage";
 import {AdService} from "../../providers/ad-service";
+import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
 
 @Component({
   selector: 'page-standings',
@@ -27,7 +28,8 @@ export class StandingsPage {
               private alertCtrl: AlertController,
               private storage: Storage,
               private dataProvider: DataProvider,
-              private adService: AdService) {
+              private adService: AdService,
+              private firebaseAnalytics: FirebaseAnalytics) {
     this.adService.initAd();
   }
 
@@ -41,6 +43,9 @@ export class StandingsPage {
       this.dataProvider.league = null;
       this.navCtrl.push(LeaguePage, { 'league': league });
     }
+
+    this.firebaseAnalytics.setCurrentScreen("Leagues");
+    this.firebaseAnalytics.logEvent('page_view', {page: "Leagues"});
   }
 
   loadsUserLeagues(refresher?) {
@@ -128,6 +133,7 @@ export class StandingsPage {
           });
 
           Utils.presentToast("League left!", this.toastCtrl);
+          this.firebaseAnalytics.logEvent('left_league', {pin: pin, userId: userId});
 
           let token = this.data.headers.get('X-Auth-Token');
           this.storage.set('token', token);
@@ -191,6 +197,7 @@ export class StandingsPage {
           this.leagues.push(newLeague);
 
           Utils.presentToast("League added!", this.toastCtrl);
+          this.firebaseAnalytics.logEvent('add_league', {pin: this.data.body.id, name: this.data.body.name, userId: userId});
 
           let token = this.data.headers.get('X-Auth-Token');
           this.storage.set('token', token);
@@ -261,6 +268,7 @@ export class StandingsPage {
           }
 
           Utils.presentToast("League joined!", this.toastCtrl);
+          this.firebaseAnalytics.logEvent('join_league', {pin: this.data.body.id, userId: userId});
 
           let token = this.data.headers.get('X-Auth-Token');
           this.storage.set('token', token);

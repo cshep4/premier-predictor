@@ -16,6 +16,8 @@ import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import {HttpHeaders} from "@angular/common/http";
 import {NotificationService} from "../../providers/notification-service";
+import {MatchPage} from "../match/match";
+import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
 
 @Component({
   selector: 'page-home',
@@ -34,6 +36,7 @@ export class HomePage {
   upcomingMatches: any;
   leagues: any;
   liveUpdates: Map<String, Subscription> = new Map();
+  toggleSection = Utils.toggleSection;
 
   private serverUrl = apiUrl + 'socket';
   private stompClient;
@@ -48,7 +51,8 @@ export class HomePage {
               @Inject('moment') private moment,
               private adService: AdService,
               private notificationService: NotificationService,
-              private plt: Platform) {
+              private plt: Platform,
+              private firebaseAnalytics: FirebaseAnalytics) {
     this.adService.initAd();
     this.displayType = "scoring";
 
@@ -66,6 +70,11 @@ export class HomePage {
     this.plt.ready().then((readySource) => {
       this.notificationService.onNotificationClick(navCtrl);
     });
+  }
+
+  ionViewDidEnter() {
+    this.firebaseAnalytics.setCurrentScreen("Home");
+    this.firebaseAnalytics.logEvent('page_view', {page: "Home"});
   }
 
   private loadData(refresher?) {
@@ -204,6 +213,7 @@ export class HomePage {
       for (let j = 0; j < this.upcomingMatches[i].matches.length; j++) {
         if (this.upcomingMatches[i].matches[j].id === match.id) {
           this.upcomingMatches[i].matches[j] = match;
+          this.upcomingMatches[i].matches[j].dateTime = this.toDateTime(match);
         }
       }
     }
@@ -275,10 +285,6 @@ export class HomePage {
     }
   }
 
-  private toggleSection(section) {
-    section.open = !section.open;
-  }
-
   private goToStandingsPage() {
     this.navCtrl.parent.select(3);
   }
@@ -288,6 +294,11 @@ export class HomePage {
       this.dataProvider.week = match.week;
     }
     this.navCtrl.parent.select(1);
+  }
+
+  private goToMatchPage(matchId) {
+    console.log(matchId);
+    this.navCtrl.push(MatchPage, { 'matchId': matchId });
   }
 
   //---------- Methods only called from template - END

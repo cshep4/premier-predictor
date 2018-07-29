@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {AlertController, NavController} from 'ionic-angular';
 import {AuthService} from '../../providers/auth-service';
+import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
 
 @Component({
     selector: 'page-reset-password',
@@ -12,8 +13,14 @@ export class ResetPasswordPage {
 
     constructor(private navCtrl: NavController,
                 private authService: AuthService,
-                private alertCtrl: AlertController) {
+                private alertCtrl: AlertController,
+                private firebaseAnalytics: FirebaseAnalytics) {
     }
+
+  ionViewDidEnter() {
+    this.firebaseAnalytics.setCurrentScreen("Reset Password");
+    this.firebaseAnalytics.logEvent('page_view', {page: "Reset Password"});
+  }
 
     resetPassword() {
         this.authService.resetPassword(this.resetData.email).then((result) => {}, (err) => {});

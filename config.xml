@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.cshep4.premierpredictor" version="1.0.0" xmlns="http://www.w3.org/ns/widgets">
+<widget id="com.cshep4.premierpredictor" version="1.0.2" xmlns="http://www.w3.org/ns/widgets">
     <name short="Premier Predictor">PremierPredictor</name>
     <description>A Premier League predictor application</description>
     <author email="chris_shepherd2@hotmail.com">Chris Shepherd</author>
@@ -32,6 +32,7 @@
         <icon density="xhdpi" src="resources/android/icon/drawable-xhdpi-icon.png" />
         <icon density="xxhdpi" src="resources/android/icon/drawable-xxhdpi-icon.png" />
         <icon density="xxxhdpi" src="resources/android/icon/drawable-xxxhdpi-icon.png" />
+        <resource-file src="google-services.json" target="app/google-services.json" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
@@ -72,6 +73,7 @@
         <icon height="29" src="resources/ios/icon/icon-small.png" width="29" />
         <icon height="58" src="resources/ios/icon/icon-small@2x.png" width="58" />
         <icon height="87" src="resources/ios/icon/icon-small@3x.png" width="87" />
+        <resource-file src="GoogleService-Info.plist" />
     </platform>
     <preference name="webviewbounce" value="false" />
     <preference name="UIWebViewBounce" value="false" />
@@ -91,12 +93,11 @@
     <preference name="SplashScreenDelay" value="3000" />
     <preference name="ShowSplashScreenSpinner" value="false" />
     <plugin name="cordova-clipboard" spec="^1.2.1" />
-    <plugin name="cordova-plugin-admob-free" spec="^0.15.0" />
+    <plugin name="cordova-plugin-admob-free" spec="^0.17.0" />
     <plugin name="cordova-plugin-console" spec="^1.0.5" />
     <plugin name="cordova-plugin-device" spec="^1.1.4" />
     <plugin name="cordova-plugin-splashscreen" spec="^4.0.3" />
     <plugin name="cordova-plugin-statusbar" spec="git+https://github.com/apache/cordova-plugin-statusbar.git" />
-    <plugin name="cordova-plugin-whitelist" spec="^1.3.1" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
     <plugin name="cordova-android-support-gradle-release" spec="^1.4.2">
         <variable name="ANDROID_SUPPORT_VERSION" value="27.0.0" />
@@ -105,6 +106,8 @@
     <plugin name="cordova-sqlite-storage" spec="^2.3.2" />
     <plugin name="cordova-wheel-selector-plugin" spec="^1.1.1" />
     <plugin name="cordova-plugin-inapppurchase" spec="^1.2.0" />
-    <engine name="android" spec="7.0.0" />
+    <plugin name="cordova-support-google-services" spec="^1.2.0" />
+    <plugin name="cordova-plugin-firebase-analytics" spec="^1.0.0" />
+    <plugin name="cordova-plugin-whitelist" spec="^1.3.1" />
     <engine name="ios" spec="4.4.0" />
 </widget>

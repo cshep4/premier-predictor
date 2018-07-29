@@ -26,7 +26,7 @@
   <ion-list>
     <ion-list class="accordion-list">
       <!-- RULES -->
-      <ion-list-header no-lines no-padding>
+      <ion-list-header class="grey-background" no-lines no-padding no-margin>
         <!-- Toggle Button -->
         <button ion-item (click)="toggleSection(rulesDropdown)" detail-none [ngClass]="{'section-active': rulesDropdown.open, 'section': !rulesDropdown.open}">
           <ion-icon item-left name="arrow-forward" *ngIf="!rulesDropdown.open"></ion-icon>
@@ -40,7 +40,7 @@
       </ion-list-header>
 
       <!-- SCORING -->
-      <ion-list-header no-lines no-padding>
+      <ion-list-header class="grey-background" no-lines no-padding no-margin>
         <!-- Toggle Button -->
         <button ion-item (click)="toggleSection(scoringDropdown)" detail-none [ngClass]="{'section-active': scoringDropdown.open, 'section': !scoringDropdown.open}">
           <ion-icon item-left name="arrow-forward" *ngIf="!scoringDropdown.open"></ion-icon>
@@ -70,7 +70,7 @@
                             [ngStyle]="{'border-top': f ? '1px solid #dedede' : 'none'}">
             {{item.date | date : "EEE, d MMMM yyyy" }}
           </ion-item-divider>
-          <ion-item *ngFor="let match of item.matches" (tap)="goToPredictorPage(match)" class="border-line">
+          <ion-item *ngFor="let match of item.matches" (tap)="goToMatchPage(match.id)" class="border-line">
             <ion-row class="v-center">
               <ion-col col-2-5 class="team-name remove-header-styling">
                 {{ getTeamName(match.localteam_name)  || "TBC" }}

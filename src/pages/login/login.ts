@@ -7,6 +7,7 @@ import Utils from "../../utils/utils";
 import {ResetPasswordPage} from "../resetpassword/resetpassword";
 import {Storage} from "@ionic/storage";
 import {AdService} from "../../providers/ad-service";
+import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
 
 @Component({
   selector: 'page-login',
@@ -23,8 +24,14 @@ export class LoginPage {
               private loadingCtrl: LoadingController,
               private toastCtrl: ToastController,
               private storage: Storage,
-              private adService: AdService) {
+              private adService: AdService,
+              private firebaseAnalytics: FirebaseAnalytics) {
     this.adService.initAd();
+  }
+
+  ionViewDidEnter() {
+    this.firebaseAnalytics.setCurrentScreen("Login");
+    this.firebaseAnalytics.logEvent('page_view', {page: "Login"});
   }
 
   doLogin() {

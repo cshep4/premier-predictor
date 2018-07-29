@@ -1,0 +1,39 @@
+<match-stat [label]="'Goals'"
+            [homeTeamStat]="match.localteam_score"
+            [awayTeamStat]="match.visitorteam_score"></match-stat>
+
+<match-stat [label]="'Possession'"
+            [homeTeamStat]="match.commentary.match_stats.localteam[0].possesiontime"
+            [awayTeamStat]="match.commentary.match_stats.visitorteam[0].possesiontime"></match-stat>
+
+<match-stat [label]="'Total Shots'"
+            [homeTeamStat]="match.commentary.match_stats.localteam[0].shots_total"
+            [awayTeamStat]="match.commentary.match_stats.visitorteam[0].shots_total"></match-stat>
+
+<match-stat [label]="'Shots On Target'"
+            [homeTeamStat]="match.commentary.match_stats.localteam[0].shots_ongoal"
+            [awayTeamStat]="match.commentary.match_stats.visitorteam[0].shots_ongoal"></match-stat>
+
+<match-stat [label]="'Corners'"
+            [homeTeamStat]="match.commentary.match_stats.localteam[0].corners"
+            [awayTeamStat]="match.commentary.match_stats.visitorteam[0].corners"></match-stat>
+
+<match-stat [label]="'Offsides'"
+            [homeTeamStat]="match.commentary.match_stats.localteam[0].offsides"
+            [awayTeamStat]="match.commentary.match_stats.visitorteam[0].offsides"></match-stat>
+
+<match-stat [label]="'Fouls'"
+            [homeTeamStat]="match.commentary.match_stats.localteam[0].fouls"
+            [awayTeamStat]="match.commentary.match_stats.visitorteam[0].fouls"></match-stat>
+
+<match-stat [label]="'Saves'"
+            [homeTeamStat]="match.commentary.match_stats.localteam[0].saves"
+            [awayTeamStat]="match.commentary.match_stats.visitorteam[0].saves"></match-stat>
+
+<match-stat [label]="'Yellow Cards'"
+            [homeTeamStat]="match.commentary.match_stats.localteam[0].yellowcards"
+            [awayTeamStat]="match.commentary.match_stats.visitorteam[0].yellowcards"></match-stat>
+
+<match-stat [label]="'Red Cards'"
+            [homeTeamStat]="match.commentary.match_stats.localteam[0].redcards"
+            [awayTeamStat]="match.commentary.match_stats.visitorteam[0].redcards"></match-stat>

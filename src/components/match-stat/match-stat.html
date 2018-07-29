@@ -1,0 +1,39 @@
+<ion-list class="width-no-margin">
+  <ion-row text-center>
+    <ion-col col-4 class="h-center team">
+      {{ homeTeamStat || 0 }}
+    </ion-col>
+    <ion-col col-4 class="h-center team">
+      {{ label }}
+    </ion-col>
+    <ion-col col-4 class="h-center team">
+      {{ awayTeamStat || 0 }}
+    </ion-col>
+  </ion-row>
+  <ion-row text-center>
+    <ion-col col-1></ion-col>
+    <ion-col col-5 no-padding>
+      <progress-bar *ngIf="homeTeamStat != null"
+                    [colour]="getBarColour(homeTeamStat, awayTeamStat)"
+                    [value]="getBarSize(homeTeamStat, awayTeamStat)"
+                    [pos]="'right'"></progress-bar>
+
+      <progress-bar *ngIf="homeTeamStat == null"
+                    [colour]="prem-white"
+                    [value]="0"
+                    [pos]="'right'"></progress-bar>
+    </ion-col>
+    <ion-col col-5 no-padding>
+      <progress-bar *ngIf="awayTeamStat != null"
+                    [colour]="getBarColour(awayTeamStat, homeTeamStat)"
+                    [value]="getBarSize(awayTeamStat, homeTeamStat)"
+                    [pos]="'left'"></progress-bar>
+
+      <progress-bar *ngIf="awayTeamStat == null"
+                    [colour]="prem-white"
+                    [value]="0"
+                    [pos]="'right'"></progress-bar>
+    </ion-col>
+    <ion-col col-1></ion-col>
+  </ion-row>
+</ion-list>

@@ -7,6 +7,7 @@ import {MatchService} from "../../providers/match-service";
 import {Storage} from "@ionic/storage";
 import {Match} from "../../models/Match";
 import {AdService} from "../../providers/ad-service";
+import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
 
 @Component({
   selector: 'page-predictions-summary',
@@ -27,7 +28,8 @@ export class PredictionSummaryPage {
               private plt: Platform,
               private storage: Storage,
               private params: NavParams,
-              private adService: AdService) {
+              private adService: AdService,
+              private firebaseAnalytics: FirebaseAnalytics) {
 
     this.firstName = this.params.get('firstName');
     this.userId = this.params.get('userId');
@@ -38,6 +40,9 @@ export class PredictionSummaryPage {
 
   ionViewDidEnter() {
     this.getPredictionSummary();
+
+    this.firebaseAnalytics.setCurrentScreen("Prediction Summary");
+    this.firebaseAnalytics.logEvent('page_view', {page: "Prediction Summary"});
   }
 
   getPredictionSummary(refresher?) {

@@ -1,0 +1,15 @@
+progress-bar {
+  .p-bar {
+    background-color: color($colors, prem-white);
+    height: 10px;
+    width: 100%;
+
+    span {
+      text-align: center;
+      display: inline-block;
+      height: 10px;
+      background-color: color($colors, primary);
+      vertical-align: top;
+    }
+  }
+}

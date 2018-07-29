@@ -1,0 +1,28 @@
+<ion-list *ngIf="comments.length > 0" no-margin>
+  <ion-row>
+    <ion-col col-12
+             text-center
+             no-padding>
+      Commentary
+    </ion-col>
+  </ion-row>
+  <ion-row padding
+           class="v-center border-line no-vertical-padding name"
+           *ngFor="let comment of comments">
+    <ion-col col-1 class="p-2 name" text-left>
+      {{ comment.minute }}
+    </ion-col>
+    <ion-col col-1 class="p-2" text-left>
+      <img *ngIf="comment.isgoal == '1'"
+           src="assets/img/icon/goal.png"
+           class="icon"
+           align="top">
+    </ion-col>
+    <ion-col col-10
+             class="p-2 name"
+             [ngStyle]="{'font-weight': comment.important == '1' ? 'bold' : 'normal',
+                          'color': comment.isgoal == '1' ? 'red' : 'black'}">
+      {{ decodeName(comment.comment) }}
+    </ion-col>
+  </ion-row>
+</ion-list>

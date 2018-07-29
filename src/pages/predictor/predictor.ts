@@ -10,6 +10,7 @@ import {WheelSelector} from "@ionic-native/wheel-selector";
 import {DataProvider} from "../../providers/data-provider";
 import {Storage} from "@ionic/storage";
 import {AdService} from "../../providers/ad-service";
+import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
 
 @Component({
   selector: 'page-predictor',
@@ -33,7 +34,8 @@ export class PredictorPage {
               private selector: WheelSelector,
               private storage: Storage,
               private dataProvider: DataProvider,
-              private adService: AdService) {
+              private adService: AdService,
+              private firebaseAnalytics: FirebaseAnalytics) {
     this.adService.initAd();
     if (!this.matches) {
       this.loadMatchesWithPredictions();
@@ -49,6 +51,10 @@ export class PredictorPage {
       this.filterargs = {week: week};
     }
     this.selector.hideSelector();
+
+
+    this.firebaseAnalytics.setCurrentScreen("Predictor");
+    this.firebaseAnalytics.logEvent('page_view', {page: "Predictor"});
   }
 
   toggleOverlay() {
@@ -164,6 +170,7 @@ export class PredictorPage {
           this.matchService.savePredictions(token, this.predictions).then((result) => {
               this.loading.dismiss();
               Utils.presentToast("Predictions stored successfully!", this.toastCtrl);
+              this.firebaseAnalytics.logEvent('save_predictions', {numPredictions: this.predictions.length});
               MatchUtils.refreshData = true;
 
               this.data = result;

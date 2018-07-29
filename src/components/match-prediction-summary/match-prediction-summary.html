@@ -1,0 +1,63 @@
+<ion-card class="grey-background">
+  <ion-card-header no-margin no-padding>
+    Others Predicted:
+  </ion-card-header>
+  <ion-card-content no-margin no-padding>
+    <ion-row  text-center class="v-center">
+      <ion-col col-12>
+        <canvas #pieCanvas></canvas>
+      </ion-col>
+    </ion-row>
+    <ion-row  text-center class="v-center">
+      <ion-col col-2>
+      </ion-col>
+      <ion-col col-3 class="h-center score-input">
+        <ion-item>
+          <ion-input [disabled]="hasDatePassed(dateTime)"
+                     readonly
+                     class="h-center"
+                     type="number"
+                     min="0"
+                     max="99"
+                     name="hg"
+                     [(ngModel)]="prediction.hGoals"
+                     text-center
+                     (press)="selectGoals(hTeam, true)"
+                     (tap)="selectGoals(hTeam, true)">
+
+          </ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col col-2 class="h-center">
+        Vs.
+      </ion-col>
+      <ion-col col-3 class="h-center score-input">
+        <ion-item>
+          <ion-input [disabled]="hasDatePassed(dateTime)"
+                     (press)="selectGoals(aTeam, false)"
+                     (tap)="selectGoals(aTeam, false)"
+                     readonly
+                     class="h-center"
+                     type="number"
+                     min="0"
+                     max="99"
+                     name="ag"
+                     [(ngModel)]="prediction.aGoals"
+                     text-center>
+          </ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col col-2>
+      </ion-col>
+
+
+    </ion-row>
+    <ion-row  text-center class="v-center">
+      <ion-col col-12>
+        <button ion-button block (click)="save()">
+          Save Prediction
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-card-content>
+</ion-card>

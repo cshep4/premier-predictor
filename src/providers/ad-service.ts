@@ -39,7 +39,6 @@ export class AdService {
     }
 
     let bannerConfig: AdMobFreeBannerConfig = {
-      isTesting: true,
       autoShow: true,
       id: id,
       bannerAtTop: atTop

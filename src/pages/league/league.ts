@@ -7,6 +7,7 @@ import {Clipboard} from "@ionic-native/clipboard";
 import {PredictionSummaryPage} from "../predictionsummary/prediction-summary";
 import {Storage} from "@ionic/storage";
 import {AdService} from "../../providers/ad-service";
+import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
 
 @Component({
   selector: 'page-league',
@@ -32,13 +33,24 @@ export class LeaguePage {
               private alertCtrl: AlertController,
               private clipboard: Clipboard,
               private storage: Storage,
-              private adService: AdService) {
+              private adService: AdService,
+              private firebaseAnalytics: FirebaseAnalytics) {
     this.leagueOverview = this.params.get('league');
     this.storage.get('userId').then((userId) => {
       this.userId = Number(userId);
     });
     this.adService.initAd();
     this.loadLeagueTable();
+  }
+
+  ionViewDidEnter() {
+    if (this.leagueOverview.pin) {
+      this.firebaseAnalytics.setCurrentScreen("Mini-League");
+      this.firebaseAnalytics.logEvent('page_view', {page: "Mini-League"});
+    } else {
+      this.firebaseAnalytics.setCurrentScreen("Overall League");
+      this.firebaseAnalytics.logEvent('page_view', {page: "Overall League"});
+    }
   }
 
   private loadLeagueTable(refresher?) {
@@ -179,6 +191,7 @@ export class LeaguePage {
           this.data = result;
 
           Utils.presentToast("League left!", this.toastCtrl);
+          this.firebaseAnalytics.logEvent('left_league', {pin: pin, userId: userId});
           Utils.refreshLeagues = true;
           this.navCtrl.popToRoot();
 
@@ -208,6 +221,7 @@ export class LeaguePage {
         this.data = result;
 
         Utils.presentToast("User Removed!", this.toastCtrl);
+        this.firebaseAnalytics.logEvent('left_league', {pin: pin, userId: userId});
 
         this.leagueTable = this.leagueTable.filter(user => user.id !== userId);
         this.displayedTable = this.displayedTable.filter(user => user.id !== userId);
@@ -264,6 +278,7 @@ export class LeaguePage {
           this.loading.dismiss();
 
           Utils.presentToast("League renamed to "+ name + "!", this.toastCtrl);
+          this.firebaseAnalytics.logEvent('rename_league', {pin: pin, fromName: this.leagueOverview.leagueName, toName: name});
           this.leagueOverview.leagueName = name;
 
           let token = this.data.headers.get('X-Auth-Token');

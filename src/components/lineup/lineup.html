@@ -1,0 +1,48 @@
+<ion-list no-margin>
+  <ion-row>
+    <ion-col col-12
+             text-center
+             no-padding>
+      Lineups
+    </ion-col>
+  </ion-row>
+  <ion-row class="v-center border-line no-vertical-padding name"
+           *ngFor="let player of lineup.localteam; let i = index">
+    <ion-col col-1 class="p-2" text-center>
+      {{ player.number }}
+    </ion-col>
+    <ion-col col-5 class="p-2" text-left>
+      {{ decodeName(player.name) }}
+    </ion-col>
+    <ion-col col-5 class="p-2" text-right>
+      {{ decodeName(lineup.visitorteam[i].name) }}
+    </ion-col>
+    <ion-col col-1 class="p-2" text-center>
+      {{ lineup.visitorteam[i].number }}
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col col-12
+             no-padding
+             text-center
+             class="p-t-8">
+      Subs
+    </ion-col>
+  </ion-row>
+  <ion-row padding
+           class="v-center border-line no-vertical-padding name"
+           *ngFor="let player of subs.localteam; let i = index">
+    <ion-col col-1 class="p-2" text-center>
+      {{ player.number }}
+    </ion-col>
+    <ion-col col-5 class="p-2" text-left>
+      {{ decodeName(player.name) }}
+    </ion-col>
+    <ion-col col-5 class="p-2" text-right>
+      {{ decodeName(subs.visitorteam[i].name) }}
+    </ion-col>
+    <ion-col col-1 class="p-2" text-center>
+      {{ subs.visitorteam[i].number }}
+    </ion-col>
+  </ion-row>
+</ion-list>

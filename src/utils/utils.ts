@@ -86,6 +86,10 @@ export default class Utils {
       return name;
     }
   }
+
+  static toggleSection(section) {
+    section.open = !section.open;
+  }
 }
 
 // export const apiUrl = 'http://localhost:8080/';

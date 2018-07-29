@@ -1,0 +1,38 @@
+<ion-list *ngIf="events.length > 0" no-margin>
+  <ion-row>
+    <ion-col col-12
+             text-center
+             no-padding>
+      Events
+    </ion-col>
+  </ion-row>
+  <ion-row padding
+           class="v-center border-line no-vertical-padding name"
+           *ngFor="let event of events">
+    <ion-col col-1 class="p-2 name" text-left>
+      {{ getMinute('localteam', event.team, event.minute, event.extra_min) }}
+    </ion-col>
+    <ion-col col-1 class="p-2" text-left>
+      <img *ngIf="shouldDisplayIcon('localteam', event.team, event.type)"
+           src="assets/img/icon/{{getIcon('localteam', event.team, event.type)}}.png"
+           class="icon"
+           align="top">
+    </ion-col>
+    <ion-col col-8
+             class="p-2 name"
+             [ngStyle]="{'text-align': event.team == 'localteam' ? 'left' : 'right'}">
+      {{ getAssistNameIfApplicable('visitorteam', event.team, event.assist, event.type) }}
+      <b>{{ decodeName(event.player) }}</b>
+      {{ getAssistNameIfApplicable('localteam', event.team, event.assist) }}
+    </ion-col>
+    <ion-col col-1 class="p-2 name" text-right>
+      <img *ngIf="shouldDisplayIcon('visitorteam', event.team, event.type)"
+           src="assets/img/icon/{{getIcon('visitorteam', event.team, event.type)}}.png"
+           class="icon"
+           align="top">
+    </ion-col>
+    <ion-col col-1 class="p-2 name" text-right>
+      {{ getMinute('visitorteam', event.team, event.minute, event.extra_min) }}
+    </ion-col>
+  </ion-row>
+</ion-list>

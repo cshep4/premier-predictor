@@ -10,6 +10,7 @@ import {LocalNotifications} from "@ionic-native/local-notifications";
 import {Storage} from "@ionic/storage";
 import {InAppPurchase} from "@ionic-native/in-app-purchase";
 import {AdService} from "../../providers/ad-service";
+import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
 
 @Component({
   selector: 'page-account',
@@ -38,13 +39,19 @@ export class AccountPage {
               private localNotifications: LocalNotifications,
               private iap: InAppPurchase,
               private alertCtrl: AlertController,
-              private adService: AdService) {
+              private adService: AdService,
+              private firebaseAnalytics: FirebaseAnalytics) {
     this.loadAccountDetails();
     this.adService.initAd();
 
     this.storage.get("notify").then((isNotified) => {
       this.isNotifications = isNotified === "true";
     });
+  }
+
+  ionViewDidEnter() {
+    this.firebaseAnalytics.setCurrentScreen("Account");
+    this.firebaseAnalytics.logEvent('page_view', {page: "Account"});
   }
 
   loadAccountDetails() {
