@@ -12,9 +12,11 @@ export class NotificationService {
   async createNotifications(upcomingMatches) {
     await this.storage.keys().then( async (keys) => {
       if (keys.indexOf("notify") <= -1) {
-        await this.storage.set("notify", "true");
+        this.storage.set("notify", "true");
       }
     });
+
+    console.log(this.storage.get("notify"));
 
     this.storage.get("notify").then((isNotified) => {
       if (isNotified !== "false") {
@@ -28,12 +30,12 @@ export class NotificationService {
   private scheduleNotifications(upcomingMatches) {
     for(let i=0; i<upcomingMatches.length; i++) {
       for (let j = 0; j < upcomingMatches[i].matches.length; j++) {
-        if (upcomingMatches[i].matches[j].hteam && upcomingMatches[i].matches[j].ateam) {
+        if (upcomingMatches[i].matches[j].localteam_name && upcomingMatches[i].matches[j].visitorteam_name) {
           let d = new Date(upcomingMatches[i].matches[j].dateTime);
           d.setHours(d.getHours() - 1);
 
-          const hTeam = upcomingMatches[i].matches[j].hteam;
-          const aTeam = upcomingMatches[i].matches[j].ateam;
+          const hTeam = upcomingMatches[i].matches[j].localteam_name;
+          const aTeam = upcomingMatches[i].matches[j].visitorteam_name;
 
           const id = upcomingMatches[i].matches[j].id;
           const title = hTeam + " vs " + aTeam + " - One hour to go!";

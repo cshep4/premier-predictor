@@ -329,4 +329,51 @@ export class LeaguePage {
   private openPredictionSummary(firstName, userId, score) {
     this.navCtrl.push(PredictionSummaryPage, { 'firstName': firstName, 'userId' : userId, 'score' : score });
   }
+
+  getTeamName(name) {
+    switch (name) {
+      case 'AFC Bournemouth':
+        return 'BOU';
+      case 'Arsenal':
+        return 'ARS';
+      case 'Brighton & Hove Albion':
+        return 'BRH';
+      case 'Burnley':
+        return 'BUR';
+      case 'Cardiff City':
+        return 'CDF';
+      case 'Chelsea':
+        return 'CHE';
+      case 'Crystal Palace':
+        return 'CRY';
+      case 'Everton':
+        return 'EVE';
+      case 'Fulham':
+        return 'FUL';
+      case 'Huddersfield Town':
+        return 'HDD';
+      case 'Leicester City':
+        return 'LEI';
+      case 'Liverpool':
+        return 'LIV';
+      case 'Manchester City':
+        return 'MCI';
+      case 'Manchester United':
+        return 'MUN';
+      case 'Newcastle United':
+      return 'NEW';
+      case 'Southampton':
+        return 'SOU';
+      case 'Tottenham Hotspur':
+        return 'TOT';
+      case 'Watford':
+        return 'WAT';
+      case 'West Ham United':
+        return 'WHU';
+      case 'Wolverhampton Wanderers':
+        return 'WLV';
+      default:
+        return name;
+    }
+  }
 }

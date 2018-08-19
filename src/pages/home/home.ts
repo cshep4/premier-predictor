@@ -155,6 +155,8 @@ export class HomePage {
           this.initializeWebSocketConnection();
         }
 
+        console.log(this.upcomingMatches);
+
         let token = this.data.headers.get('X-Auth-Token');
         this.storage.set('token', token);
       }, (err) => {

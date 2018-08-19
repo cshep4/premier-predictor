@@ -198,6 +198,7 @@ export class MatchPage {
         venue: match.venue,
         venue_id: match.venue_id,
         venue_city: match.venue_city,
+        status: match.status,
         timer: match.timer,
         time: match.time,
         localteam_id: match.localteam_id,

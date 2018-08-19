@@ -33,6 +33,8 @@ export class LeagueTable {
   }
 
   private updateTableForMatch(match) {
+    console.log(match);
+
     this.table
       .filter(it => it.teamName == match.hTeam || it.teamName == match.aTeam)
       .forEach(it => this.updateTableTeam(it, match));

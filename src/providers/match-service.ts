@@ -16,7 +16,7 @@ export class MatchService {
         .set("X-Auth-Token", token);
       const options: RequestOptions = { headers: headers, observe: "response" };
 
-      const url = apiUrl + 'fixtures/predicted/' + id;
+      const url = apiUrl + 'predictions/' + id;
 
       this.http.get(url, options).subscribe(res => {
           resolve(res);

@@ -112,7 +112,7 @@
           Match Stats
         </button>
 
-        <ion-list *ngIf="statsDropdown.open && match.commentary" no-lines padding-vertical>
+        <ion-list *ngIf="statsDropdown.open && match.commentary && match.commentary.match_stats && match.commentary.match_stats.localteam && match.commentary.match_stats.visitorteam" no-lines padding-vertical>
           <match-stats [match]="match" class="width-no-margin remove-header-styling grey-background"></match-stats>
         </ion-list>
       </ion-list-header>
@@ -154,7 +154,7 @@
           Lineups
         </button>
 
-        <ion-list *ngIf="lineupDropdown.open && match.commentary" no-lines padding>
+        <ion-list *ngIf="lineupDropdown.open && match.commentary && match.commentary.lineup && match.commentary.lineup.localteam && match.commentary.lineup.visitorteam" no-lines padding>
           <lineup [lineup]="match.commentary.lineup" [subs]="match.commentary.subs" class="remove-header-styling"></lineup>
         </ion-list>
       </ion-list-header>

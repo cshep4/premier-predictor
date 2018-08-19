@@ -23,7 +23,7 @@
              [ngStyle]="{'text-align': event.team == 'localteam' ? 'left' : 'right'}">
       {{ getAssistNameIfApplicable('visitorteam', event.team, event.assist, event.type) }}
       <b>{{ decodeName(event.player) }}</b>
-      {{ getAssistNameIfApplicable('localteam', event.team, event.assist) }}
+      {{ getAssistNameIfApplicable('localteam', event.team, event.assist, event.type) }}
     </ion-col>
     <ion-col col-1 class="p-2 name" text-right>
       <img *ngIf="shouldDisplayIcon('visitorteam', event.team, event.type)"

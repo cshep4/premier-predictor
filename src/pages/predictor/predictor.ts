@@ -5,12 +5,12 @@ import {MatchService} from "../../providers/match-service";
 import MatchUtils from "../../utils/match-utils";
 import Utils from "../../utils/utils";
 import {Prediction} from "../../models/Prediction";
-import {Match} from "../../models/Match";
 import {WheelSelector} from "@ionic-native/wheel-selector";
 import {DataProvider} from "../../providers/data-provider";
 import {Storage} from "@ionic/storage";
 import {AdService} from "../../providers/ad-service";
 import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
+import {PredictedMatch} from "../../models/PredictedMatch";
 
 @Component({
   selector: 'page-predictor',
@@ -18,6 +18,7 @@ import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
 })
 export class PredictorPage {
   matches: any;
+  forms: any;
   loading: any;
   data: any;
   filterargs = {week : "Upcoming Matches"};
@@ -26,6 +27,7 @@ export class PredictorPage {
   overlayHidden: boolean = true;
   view = "predictions";
   getTeamName = Utils.getTeamName;
+  getPointsAwarded = Utils.getPointsAwarded;
 
   constructor(private matchService: MatchService,
               private loadingCtrl: LoadingController,
@@ -108,7 +110,7 @@ export class PredictorPage {
           this.matchService.retrievePredictedMatches(token, userId).then((result) => {
             Utils.dismissLoaders(this.loading, refresher);
             this.data = result;
-            this.matches = this.data.body.map(m => <Match>({
+            this.matches = this.data.body.predictions.map(m => <PredictedMatch>({
               id: m.id,
               predictionId: m.predictionId,
               played: m.played,
@@ -118,10 +120,16 @@ export class PredictorPage {
               hTeam: m.hteam,
               aTeam: m.ateam,
               hGoals: m.hgoals,
-              aGoals: m.agoals
+              aGoals: m.agoals,
+              hResult: m.hresult,
+              aResult: m.aresult
             }));
             this.convertDateToLocalTime();
             this.matches.sort(MatchUtils.compareDate);
+
+            this.forms = this.data.body.forms;
+
+            console.log(this.forms["Liverpool"]);
 
             let token = this.data.headers.get('X-Auth-Token');
             this.storage.set('token', token);
@@ -142,11 +150,7 @@ export class PredictorPage {
   convertDateToLocalTime() {
       for(let i=0; i<this.matches.length; i++){
           const originalDate = this.matches[i].dateTime;
-          if (this.plt.is('ios')) {
-            this.matches[i].dateTime = new Date(originalDate);
-          } else {
-            this.matches[i].dateTime = MatchUtils.convertUTCDateToLocalDate(new Date(originalDate));
-          }
+          this.matches[i].dateTime = new Date(originalDate);
       }
   }
 

@@ -38,15 +38,49 @@
             <img *ngIf="item.hTeam" src="assets/img/{{item.hTeam}}.png" class="flag" align="top">
             {{ getTeamName(item.hTeam)  || "TBC" }}
           </ion-col>
-          <ion-col col-2 class="h-center">
-            <span *ngIf='item.hGoals !== null'  > {{ item.hGoals }}</span>
+          <!-- got result - START -->
+          <ion-col col-6 *ngIf="item.hResult != null && item.aResult != null">
+            <ion-row text-center class="v-center">
+              <ion-col col-3 class="h-center score-input">
+                <input disabled readonly class="h-center" type="number" min="0" max="99" name="hg{{item.id}}" [(ngModel)]="item.hGoals">
+              </ion-col>
+              <ion-col col-2 class="h-center" [ngStyle]="{'color': item.hResult == item.hGoals ? 'green' : 'red'}">
+                {{ item.hResult }}
+              </ion-col>
+              <ion-col col-2 class="h-center">
+                Vs.
+              </ion-col>
+              <ion-col col-2 class="h-center" [ngStyle]="{'color': item.aResult == item.aGoals ? 'green' : 'red'}">
+                {{ item.aResult }}
+              </ion-col>
+              <ion-col col-3 class="h-center score-input">
+                <input disabled readonly class="h-center" type="number" min="0" max="99" name="ag{{item.id}}" [(ngModel)]="item.aGoals">
+              </ion-col>
+            </ion-row>
+            <ion-row text-center
+                     class="v-center"
+                     *ngIf="item.hResult != null && item.aResult != null">
+              <ion-col class="h-center" col-12>
+                Points awarded: {{ getPointsAwarded(item) }}
+              </ion-col>
+            </ion-row>
           </ion-col>
-          <ion-col col-2 class="h-center">
+          <!-- got result - END -->
+          <!-- No result yet - START -->
+          <ion-col col-2 class="h-center" *ngIf="item.hResult == null || item.hResult == null">
+            <span *ngIf='item.hGoals !== null'>
+              <input disabled readonly class="h-center" type="number" min="0" max="99" name="hg{{item.id}}" [(ngModel)]="item.hGoals">
+            </span>
+          </ion-col>
+          <ion-col col-2 class="h-center" *ngIf="item.hResult == null || item.hResult == null">
             Vs.
           </ion-col>
-          <ion-col class="h-center" col-2>
-            <span *ngIf='item.aGoals !== null'  > {{ item.aGoals }}</span>
+          <ion-col col-2 class="h-center" *ngIf="item.hResult == null || item.hResult == null">
+            <span *ngIf='item.aGoals !== null'>
+              <input disabled readonly class="h-center" type="number" min="0" max="99" name="ag{{item.id}}" [(ngModel)]="item.aGoals">
+            </span>
           </ion-col>
+          <!-- No result yet - END -->
           <ion-col col-3 class="h-center team">
             <img *ngIf="item.aTeam" src="assets/img/{{item.aTeam}}.png" class="flag" align="top">
             {{ getTeamName(item.aTeam)  || "TBC" }}

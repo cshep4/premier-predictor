@@ -5,9 +5,9 @@ import Utils from "../../utils/utils";
 import MatchUtils from "../../utils/match-utils";
 import {MatchService} from "../../providers/match-service";
 import {Storage} from "@ionic/storage";
-import {Match} from "../../models/Match";
 import {AdService} from "../../providers/ad-service";
 import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
+import {PredictedMatch} from "../../models/PredictedMatch";
 
 @Component({
   selector: 'page-predictions-summary',
@@ -54,7 +54,9 @@ export class PredictionSummaryPage {
         Utils.dismissLoaders(this.loading, refresher);
         this.data = result;
 
-        this.predictions = this.data.body.matches.map(m => <Match>({
+        console.log(this.data.body.matches);
+
+        this.predictions = this.data.body.matches.map(m => <PredictedMatch>({
           id: m.id,
           predictionId: m.predictionId,
           played: m.played,
@@ -64,9 +66,10 @@ export class PredictionSummaryPage {
           hTeam: m.hteam,
           aTeam: m.ateam,
           hGoals: m.hgoals,
-          aGoals: m.agoals
+          aGoals: m.agoals,
+          hResult: m.hresult,
+          aResult: m.aresult
         }));
-        console.log(this.data);
 
         this.convertDateToLocalTime();
         this.predictions.sort(MatchUtils.compareDate);
@@ -86,11 +89,7 @@ export class PredictionSummaryPage {
   private convertDateToLocalTime() {
     for(let i=0; i<this.predictions.length; i++) {
       const originalDate = this.predictions[i].dateTime;
-      if (this.plt.is('ios')) {
-        this.predictions[i].dateTime = new Date(originalDate);
-      } else {
-        this.predictions[i].dateTime = MatchUtils.convertUTCDateToLocalDate(new Date(originalDate));
-      }
+      this.predictions[i].dateTime = new Date(originalDate);
     }
   }
 }

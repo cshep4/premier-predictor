@@ -33,7 +33,9 @@ export default class Utils {
   }
 
   private static getSuffix(rank) {
-    if (rank >= 11 && rank <= 13) {
+    const last2 = parseInt(String(rank).slice(-2));
+
+    if (last2 >= 11 && last2 <= 13) {
       return "th"
     }
 
@@ -82,6 +84,10 @@ export default class Utils {
       return "Man United";
     } else if (name === "Manchester City") {
       return "Man City";
+    } else if (name === "Newcastle United") {
+      return "Newcastle";
+    } else if (name === "West Ham United") {
+      return "West Ham";
     } else {
       return name;
     }
@@ -89,6 +95,46 @@ export default class Utils {
 
   static toggleSection(section) {
     section.open = !section.open;
+  }
+
+  static getPointsAwarded(match) {
+    let points = 0;
+
+    if (match.hGoals == null || match.aGoals == null) {
+      return points;
+    }
+
+    if (Utils.homeGoalsMatch(match)) {
+      points += 1;
+    }
+
+    if (Utils.awayGoalsMatch(match)) {
+      points += 1;
+    }
+
+    if (Utils.isCorrectResult(match)) {
+      points += 3;
+    }
+
+    if (Utils.homeGoalsMatch(match) && Utils.awayGoalsMatch(match)) {
+      points += 3;
+    }
+
+    return points;
+  }
+
+  private static homeGoalsMatch(match){
+    return match.hGoals == match.hResult;
+  }
+
+  private static awayGoalsMatch(match){
+    return match.aGoals == match.aResult;
+  }
+
+  private static isCorrectResult(match) {
+    return (match.hGoals > match.aGoals && match.hResult > match.aResult) ||
+      (match.hGoals == match.aGoals && match.hResult == match.aResult) ||
+      (match.hGoals < match.aGoals && match.hResult < match.aResult)
   }
 }
 

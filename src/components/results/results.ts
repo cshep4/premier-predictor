@@ -13,6 +13,7 @@ export class Results {
   filterargs = {week : "Recent Matches"};
   week: any = "Recent Matches";
   getTeamName = Utils.getTeamName;
+  getPointsAwarded = Utils.getPointsAwarded;
 
   constructor(private selector: WheelSelector) {}
 

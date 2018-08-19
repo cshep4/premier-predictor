@@ -69,18 +69,113 @@
               <img *ngIf="item.hTeam" src="assets/img/{{item.hTeam}}.png" class="flag" align="top">
               {{ getTeamName(item.hTeam)  || "TBC" }}
             </ion-col>
-            <ion-col col-2 class="h-center score-input" (tap)="selectGoals(item, item.hTeam, true)">
+            <!-- got result - START -->
+            <ion-col col-6 *ngIf="item.hResult != null && item.aResult != null">
+              <ion-row text-center class="v-center">
+                <ion-col col-3 class="h-center score-input">
+                  <input disabled readonly class="h-center" type="number" min="0" max="99" name="hg{{item.id}}" [(ngModel)]="item.hGoals">
+                </ion-col>
+                <ion-col col-2 class="h-center" [ngStyle]="{'color': item.hResult == item.hGoals ? 'green' : 'red'}">
+                  {{ item.hResult }}
+                </ion-col>
+                <ion-col col-2 class="h-center">
+                  Vs.
+                </ion-col>
+                <ion-col col-2 class="h-center" [ngStyle]="{'color': item.aResult == item.aGoals ? 'green' : 'red'}">
+                  {{ item.aResult }}
+                </ion-col>
+                <ion-col col-3 class="h-center score-input">
+                  <input disabled readonly class="h-center" type="number" min="0" max="99" name="ag{{item.id}}" [(ngModel)]="item.aGoals">
+                </ion-col>
+              </ion-row>
+              <ion-row text-center
+                       class="v-center"
+                       *ngIf="item.hResult != null && item.aResult != null">
+                <ion-col class="h-center" col-12>
+                  Points awarded: {{ getPointsAwarded(item) }}
+                </ion-col>
+              </ion-row>
+            </ion-col>
+            <!-- got result - END -->
+            <!-- No result yet - START -->
+            <ion-col col-2
+                     class="h-center score-input"
+                     (tap)="selectGoals(item, item.hTeam, true)"
+                     *ngIf="item.hResult == null || item.hResult == null">
               <input [disabled]="hasDatePassed(item.dateTime)" readonly class="h-center" type="number" min="0" max="99" name="hg{{item.id}}" [(ngModel)]="item.hGoals">
             </ion-col>
-            <ion-col col-2 class="h-center">
+            <ion-col col-2
+                     class="h-center"
+                     *ngIf="item.hResult == null || item.hResult == null">
               Vs.
             </ion-col>
-            <ion-col col-2 class="h-center score-input" (tap)="selectGoals(item, item.aTeam, false)">
+            <ion-col col-2
+                     class="h-center score-input"
+                     (tap)="selectGoals(item, item.aTeam, false)"
+                     *ngIf="item.hResult == null || item.hResult == null">
               <input [disabled]="hasDatePassed(item.dateTime)" readonly class="h-center" type="number" min="0" max="99" name="ag{{item.id}}" [(ngModel)]="item.aGoals">
             </ion-col>
+            <!-- No result yet - END -->
             <ion-col col-3 class="h-center team" (tap)="selectGoals(item, item.aTeam, false)">
               <img *ngIf="item.aTeam" src="assets/img/{{item.aTeam}}.png" class="flag" align="top">
               {{ getTeamName(item.aTeam)  || "TBC" }}
+            </ion-col>
+          </ion-row>
+          <ion-row  text-center class="v-center">
+            <ion-col col-3 class="h-center team">
+              <ion-row>
+                <!--<ion-col col-2-4 class="left-container">-->
+                  <!--<span class="form win">-->
+                    <!--<span>W</span>-->
+                  <!--</span>-->
+                <!--</ion-col>-->
+                <!--<ion-col col-2-4 class="left-container">-->
+                  <!--<span class="form win">-->
+                    <!--<span>W</span>-->
+                  <!--</span>-->
+                <!--</ion-col>-->
+                <!--<ion-col col-2-4 class="left-container">-->
+                  <!--<span class="form draw"><span>D</span></span>-->
+                <!--</ion-col>-->
+                <!--<ion-col col-2-4 class="left-container">-->
+                  <!--<span class="form win"><span>W</span></span>-->
+                <!--</ion-col>-->
+                <!--<ion-col col-2-4 class="left-container">-->
+                  <!--<span class="form loss"><span>L</span></span>-->
+                <!--</ion-col>-->
+
+                <ion-col *ngFor="let form of forms[item.hTeam].forms" col-2-4 class="left-container">
+                  <span class="form win">
+                    <span>W</span>
+                  </span>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+            <ion-col col-6 class="h-center team">
+              Last Five Games
+            </ion-col>
+            <ion-col col-3 class="h-center team">
+              <ion-row>
+                <ion-col col-2-4 class="left-container">
+                  <span class="form win">
+                    <span>W</span>
+                  </span>
+                </ion-col>
+                <ion-col col-2-4 class="left-container">
+                  <span class="form win">
+                    <span>W</span>
+                  </span>
+                </ion-col>
+                <ion-col col-2-4 class="left-container">
+                  <span class="form draw"><span>D</span></span>
+                </ion-col>
+                <ion-col col-2-4 class="left-container">
+                  <span class="form win"><span>W</span></span>
+                </ion-col>
+                <ion-col col-2-4 class="left-container">
+                  <span class="form loss"><span>L</span></span>
+                </ion-col>
+              </ion-row>
             </ion-col>
           </ion-row>
         </ion-list>

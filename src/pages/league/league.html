@@ -42,7 +42,7 @@
         {{ item.firstName }} {{ item.surname }}
       </ion-col>
       <ion-col class="center-text" col-3 [ngStyle]="{'color': userId == item.id ? '#af3434' : 'black'}" (tap)="openPredictionSummary(item.firstName, item.id, item.score)">
-        {{ item.predictedWinner }}
+        {{ getTeamName(item.predictedWinner) }}
       </ion-col>
       <ion-col class="center-text" col-2 [ngStyle]="{'color': userId == item.id ? '#af3434' : 'black'}" (tap)="openPredictionSummary(item.firstName, item.id, item.score)">
         {{ item.score }}

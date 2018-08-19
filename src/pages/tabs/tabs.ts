@@ -23,9 +23,9 @@ export class TabsPage {
   constructor(private navCtrl: NavController,
               private storage: Storage,
               private plt: Platform) {
-    // this.plt.ready().then((readySource) => {
+    this.plt.ready().then((readySource) => {
       this.checkLoggedIn();
-    // });
+    });
   }
 
   private checkLoggedIn() {

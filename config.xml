@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.cshep4.premierpredictor" version="1.0.2" xmlns="http://www.w3.org/ns/widgets">
+<widget id="com.cshep4.premierpredictor" version="1.0.5" xmlns="http://www.w3.org/ns/widgets">
     <name short="Premier Predictor">PremierPredictor</name>
     <description>A Premier League predictor application</description>
     <author email="chris_shepherd2@hotmail.com">Chris Shepherd</author>
@@ -110,4 +110,5 @@
     <plugin name="cordova-plugin-firebase-analytics" spec="^1.0.0" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.1" />
     <engine name="ios" spec="4.4.0" />
+    <engine name="android" spec="7.0.0" />
 </widget>

@@ -92,11 +92,7 @@ export class TournamentPage {
   private convertDateToLocalTime() {
     for(let i=0; i<this.matches.length; i++){
       const originalDate = this.matches[i].dateTime;
-      if (this.plt.is('ios')) {
-        this.matches[i].dateTime = new Date(originalDate);
-      } else {
-        this.matches[i].dateTime = MatchUtils.convertUTCDateToLocalDate(new Date(originalDate));
-      }
+      this.matches[i].dateTime = new Date(originalDate);
     }
   }
 
