@@ -47,6 +47,7 @@ import {MatchPredictionSummary} from "../components/match-prediction-summary/mat
 import {Lineup} from "../components/lineup/lineup";
 import {MatchEvents} from "../components/match-events/match-events";
 import {Commentary} from "../components/commentary/commentary";
+import {FormIcons} from "../components/form-icons/form-icons";
 
 @NgModule({
   declarations: [
@@ -76,7 +77,8 @@ import {Commentary} from "../components/commentary/commentary";
     MatchPredictionSummary,
     Lineup,
     MatchEvents,
-    Commentary
+    Commentary,
+    FormIcons
   ],
   imports: [
     IonicModule.forRoot(MyApp, {

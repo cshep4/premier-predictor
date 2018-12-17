@@ -1,0 +1,22 @@
+<ion-row>
+  <ion-col *ngFor="let form of forms" col-2-4 class="container v-center-large">
+    <span *ngIf="form.result === 'WIN'" class="form win tooltip">
+      <span [ngClass]="{'tooltiptext-left': side === 'left', 'tooltiptext-right': side === 'right'}">
+        {{ form.score }} {{ capitalise(form.location) }} {{ capitalise(form.result) }} vs. {{ getTeamName(form.opponent) }}
+      </span>
+      <span class="h-center-large">W</span>
+    </span>
+    <span *ngIf="form.result === 'DRAW'" class="form draw tooltip">
+      <span [ngClass]="{'tooltiptext-left': side === 'left', 'tooltiptext-right': side === 'right'}">
+        {{ form.score }} {{ capitalise(form.location) }} {{ capitalise(form.result) }} vs. {{ getTeamName(form.opponent) }}
+      </span>
+      <span class="h-center-large">D</span>
+    </span>
+    <span *ngIf="form.result === 'LOSS'" class="form loss tooltip">
+      <span [ngClass]="{'tooltiptext-left': side === 'left', 'tooltiptext-right': side === 'right'}">
+        {{ form.score }} {{ capitalise(form.location) }} {{ capitalise(form.result) }} vs. {{ getTeamName(form.opponent) }}
+      </span>
+      <span class="h-center-large">L</span>
+    </span>
+  </ion-col>
+</ion-row>

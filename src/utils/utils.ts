@@ -136,10 +136,16 @@ export default class Utils {
       (match.hGoals == match.aGoals && match.hResult == match.aResult) ||
       (match.hGoals < match.aGoals && match.hResult < match.aResult)
   }
+
+  static capitalise(str) {
+    return str.split(' ')
+      .map(s => s.slice(0, 1).toUpperCase() + s.slice(1).toLowerCase())
+      .join(' ');
+  }
 }
 
-// export const apiUrl = 'http://localhost:8080/';
-export const apiUrl = 'https://premierpredictor.herokuapp.com/';
+export const apiUrl = 'http://localhost:8080/';
+// export const apiUrl = 'https://premierpredictor.herokuapp.com/';
 
 export interface RequestOptions {
   headers?: HttpHeaders | { [header: string]: string | Array<string> };

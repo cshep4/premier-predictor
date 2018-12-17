@@ -26,6 +26,7 @@ export class MatchPage {
   match: MatchFacts;
   prediction: Prediction;
   matchPredictionSummary: PredictionSummary;
+  forms: any;
 
   statsDropdown = {open: false};
   eventsDropdown = {open: false};
@@ -137,6 +138,8 @@ export class MatchPage {
         });
 
         this.match.dateTime = this.toDateTime(this.match);
+
+        this.forms = this.data.body.forms;
 
         if (!this.isConnected) {
           this.initializeWebSocketConnection();

@@ -99,11 +99,7 @@ export class Results {
   }
 
   private jumpToCurrentWeek() {
-    if (this.matches.filter(item => item.dateTime <= Date.now()).length == 0) {
-      this.week = 1;
-    } else {
-      this.week = this.matches.filter(item => item.dateTime <= Date.now())[0].matchday;
-    }
+    this.week = this.matches.slice(-1)[0].matchday;
     this.filterargs = {week: this.week};
   }
 }

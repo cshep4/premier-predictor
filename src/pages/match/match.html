@@ -66,17 +66,19 @@
           </ion-row>
         </ion-col>
       </ion-row>
-      <!--<ion-row text-center>-->
-        <!--<ion-col col-4 class="h-center team">-->
-          <!--{{ match.localteam_name || "TBC" }}-->
-        <!--</ion-col>-->
-        <!--<ion-col class="h-center" col-4>-->
-
-        <!--</ion-col>-->
-        <!--<ion-col col-4 class="h-center team">-->
-          <!--{{ match.visitorteam_name  || "TBC" }}-->
-        <!--</ion-col>-->
-      <!--</ion-row>-->
+      <!-- FORMS - START -->
+      <ion-row  text-center class="v-center">
+        <ion-col col-4 class="h-center team">
+          <form-icons [side]="'left'" [forms]="forms[match.localteam_name].form"></form-icons>
+        </ion-col>
+        <ion-col col-4 class="h-center team">
+          Last Five Games
+        </ion-col>
+        <ion-col col-4 class="h-center team">
+          <form-icons [side]="'right'" [forms]="forms[match.visitorteam_name].form"></form-icons>
+        </ion-col>
+      </ion-row>
+      <!-- FORMS - END -->
     </ion-list>
   </ion-card>
 
