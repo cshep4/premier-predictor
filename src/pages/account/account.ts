@@ -19,8 +19,8 @@ import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
 export class AccountPage {
   loading: any;
   data: any;
-  accountData = { id: 0, firstName: '', surname: '', email:''};
-  passwordData = { id: 0, oldPassword:'', newPassword:'', confirmPassword: '' };
+  accountData = { id: '', firstName: '', surname: '', email:''};
+  passwordData = { id: '', oldPassword:'', newPassword:'', confirmPassword: '' };
   isPasswordBetween6And20Characters = UserUtils.isPasswordBetween6And20Characters;
   doesPasswordContainUppercaseLetters = UserUtils.doesPasswordContainUppercaseLetters;
   doesPasswordContainLowercaseLetters = UserUtils.doesPasswordContainLowercaseLetters;
@@ -67,8 +67,8 @@ export class AccountPage {
           this.accountData.firstName = this.data.body.firstName;
           this.accountData.surname = this.data.body.surname;
 
-          let token = this.data.headers.get('X-Auth-Token');
-          this.storage.set('token', token);
+          // let token = this.data.headers.get('X-Auth-Token');
+          // this.storage.set('token', token);
 
         }, (err) => {
           this.loading.dismiss();
@@ -76,11 +76,11 @@ export class AccountPage {
         });
       }, (error) => {
         this.loading.dismiss();
-        Utils.presentToast("Error retrieving account", this.toastCtrl);
+        Utils.presentToast("Error retrieving account, please try again", this.toastCtrl);
       });
     }, (error) => {
       this.loading.dismiss();
-      Utils.presentToast("Error retrieving account", this.toastCtrl);
+      Utils.presentToast("Error retrieving account, please try again", this.toastCtrl);
     });
   }
 
@@ -97,7 +97,7 @@ export class AccountPage {
 
     this.storage.get('token').then((token) => {
       this.storage.get('userId').then((userId) => {
-        this.accountData.id = Number(userId);
+        this.accountData.id = userId;
 
         this.accountService.updateUserDetails(this.accountData, token).then((result) => {
           this.loading.dismiss();
@@ -105,8 +105,8 @@ export class AccountPage {
 
           Utils.presentToast("Details updated!", this.toastCtrl);
 
-          let token = this.data.headers.get('X-Auth-Token');
-          this.storage.set('token', token);
+          // let token = this.data.headers.get('X-Auth-Token');
+          // this.storage.set('token', token);
 
         }, (err) => {
           this.loading.dismiss();
@@ -114,11 +114,11 @@ export class AccountPage {
         });
       }, (error) => {
         this.loading.dismiss();
-        Utils.presentToast("Error updating details", this.toastCtrl);
+        Utils.presentToast("Error updating details, please try again", this.toastCtrl);
       });
     }, (error) => {
       this.loading.dismiss();
-      Utils.presentToast("Error updating details", this.toastCtrl);
+      Utils.presentToast("Error updating details, please try again", this.toastCtrl);
     });
   }
 
@@ -127,18 +127,18 @@ export class AccountPage {
 
     this.storage.get('token').then((token) => {
       this.storage.get('userId').then((userId) => {
-        this.passwordData.id = Number(userId);
+        this.passwordData.id = userId;
 
         this.accountService.updateUserPassword(this.passwordData, token).then((result) => {
           this.loading.dismiss();
           this.data = result;
 
-          this.passwordData = { id: 0, oldPassword:'', newPassword:'', confirmPassword: '' };
+          this.passwordData = { id: '', oldPassword:'', newPassword:'', confirmPassword: '' };
 
           Utils.presentToast("Password updated!", this.toastCtrl);
 
-          let token = this.data.headers.get('X-Auth-Token');
-          this.storage.set('token', token);
+          // let token = this.data.headers.get('X-Auth-Token');
+          // this.storage.set('token', token);
 
         }, (err) => {
           this.loading.dismiss();
@@ -146,11 +146,11 @@ export class AccountPage {
         });
       }, (error) => {
         this.loading.dismiss();
-        Utils.presentToast("Error updating password", this.toastCtrl);
+        Utils.presentToast("Error updating password, please try again", this.toastCtrl);
       });
     }, (error) => {
       this.loading.dismiss();
-      Utils.presentToast("Error updating password", this.toastCtrl);
+      Utils.presentToast("Error updating password, please try again", this.toastCtrl);
     });
   }
 

@@ -1,7 +1,8 @@
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AuthService} from "./auth-service";
 import {Injectable} from "@angular/core";
-import {apiUrl, RequestOptions} from "../utils/utils";
+import Utils, {RequestOptions} from "../utils/utils";
+import {leagueUrl} from "../utils/urls";
 
 @Injectable()
 export class StandingsService {
@@ -12,10 +13,11 @@ export class StandingsService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
 
-      const url = apiUrl + 'standings/userLeagues/' + id;
+      const url = leagueUrl + id;
 
       this.http.get(url, options).subscribe(res => {
         resolve(res);
@@ -29,13 +31,14 @@ export class StandingsService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
 
-      const url = apiUrl + 'standings/add';
+      const url = leagueUrl;// + 'standings/add';
       const body = {
         name: name,
-        userId: id
+        id: id
       };
 
       this.http.post(url, body, options).subscribe(res => {
@@ -50,16 +53,17 @@ export class StandingsService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
 
-      const url = apiUrl + 'standings/join';
+      const url = leagueUrl + 'join';
       const body = {
-        leagueId: pin,
-        userId: id
+        pin: Number(pin),
+        id: id
       };
 
-      this.http.post(url, body, options).subscribe(res => {
+      this.http.put(url, body, options).subscribe(res => {
         resolve(res);
       }, (err) => {
         reject(err);
@@ -71,16 +75,17 @@ export class StandingsService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
 
-      const url = apiUrl + 'standings/leave';
+      const url = leagueUrl + 'leave';
       const body = {
-        leagueId: pin,
-        userId: id
+        pin: Number(pin),
+        id: id
       };
 
-      this.http.post(url, body, options).subscribe(res => {
+      this.http.put(url, body, options).subscribe(res => {
         resolve(res);
       }, (err) => {
         reject(err);
@@ -92,14 +97,15 @@ export class StandingsService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
 
       let url;
       if (pin) {
-        url = apiUrl + 'standings/league/' + pin;
+        url = leagueUrl + 'standings/' + pin;
       } else {
-        url = apiUrl + 'standings/overall';
+        url = leagueUrl + 'standings';
       }
 
       this.http.get(url, options).subscribe(res => {
@@ -114,12 +120,13 @@ export class StandingsService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
 
-      const url = apiUrl + 'standings/rename';
+      const url = leagueUrl + 'rename';
       const body = {
-        id: pin,
+        pin: Number(pin),
         name: name
       };
 

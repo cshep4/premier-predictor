@@ -17,6 +17,12 @@ rules {
     font-size: 3vw;
   }
 
+  @media screen and (min-width: 467px) {
+    .text {
+      font-size: 14px;
+    }
+  }
+
   .remove-styling {
     text-transform: none;
     overflow-wrap: normal;

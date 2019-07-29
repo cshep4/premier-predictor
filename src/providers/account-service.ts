@@ -2,7 +2,9 @@ import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/map';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import UserUtils from "../utils/user-utils";
-import {apiUrl, RequestOptions} from "../utils/utils";
+import {RequestOptions} from "../utils/utils";
+import {userUrl} from "../utils/urls";
+import Utils from "../utils/utils";
 
 @Injectable()
 export class AccountService {
@@ -12,15 +14,16 @@ export class AccountService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
-      const url = apiUrl + 'users/' + id;
+      const url = userUrl + 'users/' + id;
 
       this.http.get(url, options)
         .subscribe(res => {
           resolve(res);
         }, (err) => {
-          reject("Error retrieving account");
+          reject("Error retrieving account, please try again");
         });
     });
   }
@@ -34,14 +37,15 @@ export class AccountService {
 
           const headers = new HttpHeaders()
             .set("Content-Type", 'application/json')
-            .set("X-Auth-Token", token);
+            .set("X-Auth-Token", token)
+            .set("Authorization", Utils.stripAuthToken(token));
           const options: RequestOptions = { headers: headers, observe: "response" };
 
-          this.http.put(apiUrl+'users/update', JSON.stringify(data), options)
+          this.http.put(userUrl+'users', JSON.stringify(data), options)
             .subscribe(res => {
                 resolve(res);
             }, (err) => {
-                reject("Error updating details");
+                reject("Error updating details, please try again");
             });
       });
   }
@@ -55,14 +59,15 @@ export class AccountService {
 
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
 
-      this.http.put(apiUrl+'users/updatePassword', JSON.stringify(data), options)
+      this.http.put(userUrl+'users/password', JSON.stringify(data), options)
         .subscribe(res => {
           resolve(res);
         }, (err) => {
-          reject("Error updating password");
+          reject("Error updating password, please try again");
         });
     });
   }
@@ -71,16 +76,17 @@ export class AccountService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
       const body = { transactionId: transactionId };
-      const url = apiUrl + 'users/' + id;
+      const url = userUrl + 'users/' + id;
 
       this.http.put(url, body, options)
         .subscribe(res => {
           resolve(res);
         }, (err) => {
-          reject("Error retrieving account");
+          reject("Error retrieving account, please try again");
         });
     });
   }

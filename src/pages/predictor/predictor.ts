@@ -112,38 +112,37 @@ export class PredictorPage {
             this.data = result;
             this.matches = this.data.body.predictions.map(m => <PredictedMatch>({
               id: m.id,
-              predictionId: m.predictionId,
               played: m.played,
               group: m.group,
               dateTime: m.dateTime,
               matchday: m.matchday,
-              hTeam: m.hteam,
-              aTeam: m.ateam,
-              hGoals: m.hgoals,
-              aGoals: m.agoals,
-              hResult: m.hresult,
-              aResult: m.aresult
+              hTeam: m.hTeam,
+              aTeam: m.aTeam,
+              hGoals: m.hGoals,
+              aGoals: m.aGoals,
+              hResult: m.hResult,
+              aResult: m.aResult
             }));
             this.convertDateToLocalTime();
             this.matches.sort(MatchUtils.compareDate);
 
-            this.forms = this.data.body.forms;
+            if (this.data.body.forms != null) {
+              this.forms = this.data.body.forms;
+            }
 
-            console.log(this.forms["Liverpool"]);
-
-            let token = this.data.headers.get('X-Auth-Token');
-            this.storage.set('token', token);
+            // let token = this.data.headers.get('X-Auth-Token');
+            // this.storage.set('token', token);
           }, (err) => {
             Utils.dismissLoaders(this.loading, refresher);
-            Utils.presentToast("Error loading predictions", this.toastCtrl);
+            Utils.presentToast("Error loading predictions, please try again", this.toastCtrl);
           });
         }, (error) => {
           Utils.dismissLoaders(this.loading, refresher);
-          Utils.presentToast("Error loading predictions", this.toastCtrl);
+          Utils.presentToast("Error loading predictions, please try again", this.toastCtrl);
         });
       }, (error) => {
         Utils.dismissLoaders(this.loading, refresher);
-        Utils.presentToast("Error loading predictions", this.toastCtrl);
+        Utils.presentToast("Error loading predictions, please try again", this.toastCtrl);
       });
   }
 
@@ -164,9 +163,8 @@ export class PredictorPage {
             .filter(m => m.hGoals !== '' && m.aGoals !== '')
             .filter(m => !isNaN(m.hGoals) && !isNaN(m.aGoals))
             .map(m => <Prediction>({
-                id : m.predictionId,
-                hGoals: m.hGoals,
-                aGoals: m.aGoals,
+                hGoals: Number(m.hGoals),
+                aGoals: Number(m.aGoals),
                 userId: userId,
                 matchId: m.id
             }));
@@ -179,15 +177,8 @@ export class PredictorPage {
 
               this.data = result;
 
-              for (let i = 0; i < this.matches.length; i++) {
-                if (this.hasPredictionBeenAdded(this.matches[i])) {
-                  let newPrediction = this.data.body.find(p => p.matchId == this.matches[i].id);
-                  this.matches[i].predictionId = newPrediction.id;
-                }
-              }
-
-              const token = this.data.headers.get('X-Auth-Token');
-              this.storage.set('token', token);
+              // const token = this.data.headers.get('X-Auth-Token');
+              // this.storage.set('token', token);
           }, (err) => {
               this.loading.dismiss();
               Utils.presentToast("Error saving predictions, please try again", this.toastCtrl);

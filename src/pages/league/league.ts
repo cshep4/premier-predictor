@@ -21,7 +21,7 @@ export class LeaguePage {
   displayedTable: any;
   currentIndex = 0;
   numberToBeDisplayed = 60;
-  userId: number;
+  userId: string;
   scrolling: boolean = false;
   @ViewChild(Content) content: Content;
 
@@ -37,7 +37,7 @@ export class LeaguePage {
               private firebaseAnalytics: FirebaseAnalytics) {
     this.leagueOverview = this.params.get('league');
     this.storage.get('userId').then((userId) => {
-      this.userId = Number(userId);
+      this.userId = userId;
     });
     this.adService.initAd();
     this.loadLeagueTable();
@@ -76,8 +76,8 @@ export class LeaguePage {
         this.currentIndex = this.displayedTable.length;
 
 
-        let token = this.data.headers.get('X-Auth-Token');
-        this.storage.set('token', token);
+        // let token = this.data.headers.get('X-Auth-Token');
+        // this.storage.set('token', token);
       }, (err) => {
         Utils.dismissLoaders(this.loading, refresher);
         Utils.presentToast("Error loading league table, please try again", this.toastCtrl);
@@ -105,7 +105,7 @@ export class LeaguePage {
     this.clipboard.copy(this.leagueOverview.pin.toString()).then(result => {
       Utils.presentToast("Pin copied!", this.toastCtrl);
     }).catch( err => {
-      Utils.presentToast("Error copying pin", this.toastCtrl);
+      Utils.presentToast("Error copying pin, please try again", this.toastCtrl);
     });
   }
 
@@ -195,8 +195,8 @@ export class LeaguePage {
           Utils.refreshLeagues = true;
           this.navCtrl.popToRoot();
 
-          let token = this.data.headers.get('X-Auth-Token');
-          this.storage.set('token', token);
+          // let token = this.data.headers.get('X-Auth-Token');
+          // this.storage.set('token', token);
         }, (err) => {
           this.loading.dismiss();
           Utils.presentToast("Error leaving league, please try again", this.toastCtrl);
@@ -226,8 +226,8 @@ export class LeaguePage {
         this.leagueTable = this.leagueTable.filter(user => user.id !== userId);
         this.displayedTable = this.displayedTable.filter(user => user.id !== userId);
 
-        let token = this.data.headers.get('X-Auth-Token');
-        this.storage.set('token', token);
+        // let token = this.data.headers.get('X-Auth-Token');
+        // this.storage.set('token', token);
       }, (err) => {
         this.loading.dismiss();
         Utils.presentToast("Error removing user, please try again", this.toastCtrl);
@@ -281,8 +281,8 @@ export class LeaguePage {
           this.firebaseAnalytics.logEvent('rename_league', {pin: pin, fromName: this.leagueOverview.leagueName, toName: name});
           this.leagueOverview.leagueName = name;
 
-          let token = this.data.headers.get('X-Auth-Token');
-          this.storage.set('token', token);
+          // let token = this.data.headers.get('X-Auth-Token');
+          // this.storage.set('token', token);
         }, (err) => {
           this.loading.dismiss();
           Utils.presentToast("Error renaming league, please try again", this.toastCtrl);
@@ -294,7 +294,7 @@ export class LeaguePage {
 
   private jumpToUserPosition() {
     this.storage.get('userId').then((userId) => {
-      const position = this.leagueTable.map(e => e.id).indexOf(Number(userId));
+      const position = this.leagueTable.map(e => e.id).indexOf(userId);
       const id = "user" + userId;
 
       if (position > this.currentIndex) {
@@ -372,6 +372,12 @@ export class LeaguePage {
         return 'WHU';
       case 'Wolverhampton Wanderers':
         return 'WLV';
+      case 'Aston Villa':
+        return 'AVL';
+      case 'Norwich City':
+        return 'NWC';
+      case 'Sheffield United':
+        return 'SHU';
       default:
         return name;
     }

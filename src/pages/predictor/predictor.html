@@ -121,15 +121,15 @@
               {{ getTeamName(item.aTeam)  || "TBC" }}
             </ion-col>
           </ion-row>
-          <ion-row  text-center class="v-center">
+          <ion-row *ngIf="forms[item.hTeam] && forms[item.aTeam]" text-center class="v-center">
             <ion-col col-3 class="h-center team">
-              <form-icons [side]="'left'" [forms]="forms[item.hTeam].form"></form-icons>
+              <form-icons [side]="'left'" *ngIf="forms[item.hTeam]" [forms]="forms[item.hTeam].forms"></form-icons>
             </ion-col>
             <ion-col col-6 class="h-center team">
               Last Five Games
             </ion-col>
             <ion-col col-3 class="h-center team">
-              <form-icons [side]="'right'" [forms]="forms[item.aTeam].form"></form-icons>
+              <form-icons [side]="'right'" *ngIf="forms[item.aTeam]" [forms]="forms[item.aTeam].forms"></form-icons>
             </ion-col>
           </ion-row>
         </ion-list>

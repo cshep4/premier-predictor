@@ -76,21 +76,21 @@ export class StandingsPage {
 
           Utils.refreshLeagues = false;
 
-          let token = this.data.headers.get('X-Auth-Token');
-          this.storage.set('token', token);
+          // let token = this.data.headers.get('X-Auth-Token');
+          // this.storage.set('token', token);
         }, (err) => {
           if (!refresher) {
             this.loading.dismiss();
           } else {
             refresher.complete();
           }
-          Utils.presentToast("Error loading leagues", this.toastCtrl);
+          Utils.presentToast("Error loading leagues, please try again", this.toastCtrl);
         });
       }, (error) => {
-        Utils.presentToast("Error loading leagues", this.toastCtrl);
+        Utils.presentToast("Error loading leagues, please try again", this.toastCtrl);
       });
     }, (error) => {
-      Utils.presentToast("Error loading leagues", this.toastCtrl);
+      Utils.presentToast("Error loading leagues, please try again", this.toastCtrl);
     });
   }
 
@@ -135,17 +135,17 @@ export class StandingsPage {
           Utils.presentToast("League left!", this.toastCtrl);
           this.firebaseAnalytics.logEvent('left_league', {pin: pin, userId: userId});
 
-          let token = this.data.headers.get('X-Auth-Token');
-          this.storage.set('token', token);
+          // let token = this.data.headers.get('X-Auth-Token');
+          // this.storage.set('token', token);
         }, (err) => {
           this.loading.dismiss();
-          Utils.presentToast("Error leaving league", this.toastCtrl);
+          Utils.presentToast("Error leaving league, please try again", this.toastCtrl);
         });
       }, (error) => {
-        Utils.presentToast("Error leaving league", this.toastCtrl);
+        Utils.presentToast("Error leaving league, please try again", this.toastCtrl);
       });
     }, (error) => {
-      Utils.presentToast("Error leaving league", this.toastCtrl);
+      Utils.presentToast("Error leaving league, please try again", this.toastCtrl);
     });
   }
 
@@ -190,7 +190,7 @@ export class StandingsPage {
 
           const newLeague = <UserLeagueOverview>({
             leagueName: this.data.body.name,
-            pin: this.data.body.id,
+            pin: this.data.body.pin,
             rank: Utils.getRankWithSuffix(1)
           });
 
@@ -199,17 +199,17 @@ export class StandingsPage {
           Utils.presentToast("League added!", this.toastCtrl);
           this.firebaseAnalytics.logEvent('add_league', {pin: this.data.body.id, name: this.data.body.name, userId: userId});
 
-          let token = this.data.headers.get('X-Auth-Token');
-          this.storage.set('token', token);
+          // let token = this.data.headers.get('X-Auth-Token');
+          // this.storage.set('token', token);
         }, (err) => {
           this.loading.dismiss();
-          Utils.presentToast("Error creating league", this.toastCtrl);
+          Utils.presentToast("Error creating league, please try again", this.toastCtrl);
         });
       }, (error) => {
-        Utils.presentToast("Error creating league", this.toastCtrl);
+        Utils.presentToast("Error creating league, please try again", this.toastCtrl);
       });
     }, (error) => {
-      Utils.presentToast("Error creating league", this.toastCtrl);
+      Utils.presentToast("Error creating league, please try again", this.toastCtrl);
     });
   }
 
@@ -270,17 +270,17 @@ export class StandingsPage {
           Utils.presentToast("League joined!", this.toastCtrl);
           this.firebaseAnalytics.logEvent('join_league', {pin: this.data.body.id, userId: userId});
 
-          let token = this.data.headers.get('X-Auth-Token');
-          this.storage.set('token', token);
+          // let token = this.data.headers.get('X-Auth-Token');
+          // this.storage.set('token', token);
         }, (err) => {
           this.loading.dismiss();
-          Utils.presentToast("Error joining league", this.toastCtrl);
+          Utils.presentToast("Error joining league, please try again", this.toastCtrl);
         });
       }, (error) => {
-        Utils.presentToast("Error joining league", this.toastCtrl);
+        Utils.presentToast("Error joining league, please try again", this.toastCtrl);
       });
     }, (error) => {
-      Utils.presentToast("Error joining league", this.toastCtrl);
+      Utils.presentToast("Error joining league, please try again", this.toastCtrl);
     });
   }
 }

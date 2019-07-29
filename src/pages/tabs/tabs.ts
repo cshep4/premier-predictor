@@ -33,7 +33,22 @@ export class TabsPage {
       if (!token) {
         this.navCtrl.setRoot(LoginPage);
       }
+      this.logoutIfLegacyUser();
     }, (error) => {
+      this.navCtrl.setRoot(LoginPage);
+    });
+  }
+
+  private logoutIfLegacyUser() {
+    this.storage.get('userId').then((id) => {
+      console.log(id);
+
+      if (!isNaN(id)) {
+        this.storage.clear();
+        this.navCtrl.setRoot(LoginPage);
+      }
+    }, (error) => {
+      this.storage.clear();
       this.navCtrl.setRoot(LoginPage);
     });
   }

@@ -1,6 +1,6 @@
 import {AlertController, LoadingController, NavController, NavParams, ToastController} from "ionic-angular";
 import {Component, Inject} from "@angular/core";
-import Utils, {apiUrl} from "../../utils/utils";
+import Utils from "../../utils/utils";
 import {Clipboard} from "@ionic-native/clipboard";
 import {Storage} from "@ionic/storage";
 import {AdService} from "../../providers/ad-service";
@@ -12,6 +12,7 @@ import {MatchFacts} from "../../models/MatchFacts";
 import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
 import {Prediction} from "../../models/Prediction";
 import {PredictionSummary} from "../../models/PredictionSummary";
+import {apiUrl} from "../../utils/urls";
 
 @Component({
   selector: 'page-match',
@@ -20,13 +21,13 @@ import {PredictionSummary} from "../../models/PredictionSummary";
 export class MatchPage {
   loading: any;
   data: any;
-  userId: number;
-  matchId: number;
+  userId: string;
+  matchId: string;
 
   match: MatchFacts;
   prediction: Prediction;
   matchPredictionSummary: PredictionSummary;
-  forms: any;
+  // forms: any;
 
   statsDropdown = {open: false};
   eventsDropdown = {open: false};
@@ -50,12 +51,13 @@ export class MatchPage {
               private storage: Storage,
               private adService: AdService,
               @Inject('moment') private moment,
-              private firebaseAnalytics: FirebaseAnalytics) {}
+              private firebaseAnalytics: FirebaseAnalytics) {
+  }
 
   ionViewDidLoad() {
     this.matchId = this.params.get('matchId');
     this.storage.get('userId').then((userId) => {
-      this.userId = Number(userId);
+      this.userId = userId;
     });
     this.adService.initAd();
     this.loadMatch();
@@ -92,9 +94,8 @@ export class MatchPage {
 
         if (this.data.body.prediction) {
           this.prediction = <Prediction>({
-            id: this.data.body.prediction.id,
-            hGoals: this.data.body.prediction.hgoals,
-            aGoals: this.data.body.prediction.agoals,
+            hGoals: this.data.body.prediction.hGoals,
+            aGoals: this.data.body.prediction.aGoals,
             userId: this.data.body.prediction.userId,
             matchId: this.data.body.prediction.matchId
           });
@@ -139,7 +140,7 @@ export class MatchPage {
 
         this.match.dateTime = this.toDateTime(this.match);
 
-        this.forms = this.data.body.forms;
+        // this.forms = this.data.body.forms;
 
         if (!this.isConnected) {
           this.initializeWebSocketConnection();
@@ -151,8 +152,8 @@ export class MatchPage {
 
         console.log(this.match);
 
-        let token = this.data.headers.get('X-Auth-Token');
-        this.storage.set('token', token);
+        // let token = this.data.headers.get('X-Auth-Token');
+        // this.storage.set('token', token);
       }, (err) => {
         Utils.dismissLoaders(this.loading, refresher);
         Utils.presentToast("Error loading match data, please try again", this.toastCtrl);

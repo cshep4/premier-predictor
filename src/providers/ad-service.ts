@@ -116,8 +116,8 @@ export class AdService {
               this.storage.set("adFree", "false");
             }
 
-            let token = data.headers.get('X-Auth-Token');
-            this.storage.set('token', token);
+            // let token = data.headers.get('X-Auth-Token');
+            // this.storage.set('token', token);
 
             resolve("setting added");
 

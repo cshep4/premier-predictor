@@ -17,7 +17,7 @@ export class PredictionSummaryPage {
   predictions: any[];
   loading: any;
   data: any;
-  userId: Number;
+  userId: string;
   firstName: String;
   score: Number;
   view: any ="results";
@@ -58,24 +58,23 @@ export class PredictionSummaryPage {
 
         this.predictions = this.data.body.matches.map(m => <PredictedMatch>({
           id: m.id,
-          predictionId: m.predictionId,
           played: m.played,
           group: m.group,
           dateTime: m.dateTime,
           matchday: m.matchday,
-          hTeam: m.hteam,
-          aTeam: m.ateam,
-          hGoals: m.hgoals,
-          aGoals: m.agoals,
-          hResult: m.hresult,
-          aResult: m.aresult
+          hTeam: m.hTeam,
+          aTeam: m.aTeam,
+          hGoals: m.hGoals,
+          aGoals: m.aGoals,
+          hResult: m.hResult,
+          aResult: m.aResult
         }));
 
         this.convertDateToLocalTime();
         this.predictions.sort(MatchUtils.compareDate);
 
-        let token = this.data.headers.get('X-Auth-Token');
-        this.storage.set('token', token);
+        // let token = this.data.headers.get('X-Auth-Token');
+        // this.storage.set('token', token);
       }, (err) => {
         Utils.dismissLoaders(this.loading, refresher);
         Utils.presentToast("Error loading predictions, please try again", this.toastCtrl);

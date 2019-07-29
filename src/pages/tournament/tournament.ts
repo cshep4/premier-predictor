@@ -63,22 +63,21 @@ export class TournamentPage {
 
         this.matches = this.data.body.map(m => <Match>({
           id: m.id,
-          predictionId: m.predictionId,
           played: m.played,
           group: m.group,
           dateTime: m.dateTime,
           matchday: m.matchday,
-          hTeam: m.hteam,
-          aTeam: m.ateam,
-          hGoals: m.hgoals,
-          aGoals: m.agoals
+          hTeam: m.hTeam,
+          aTeam: m.aTeam,
+          hGoals: m.hGoals,
+          aGoals: m.aGoals
         }));
 
         this.convertDateToLocalTime();
         this.matches.sort(MatchUtils.compareDate);
 
-        let token = this.data.headers.get('X-Auth-Token');
-        this.storage.set('token', token);
+        // let token = this.data.headers.get('X-Auth-Token');
+        // this.storage.set('token', token);
       }, (err) => {
         Utils.dismissLoaders(this.loading, refresher);
         Utils.presentToast("Error loading fixtures/results, please try again", this.toastCtrl);

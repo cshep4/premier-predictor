@@ -88,6 +88,10 @@ export default class Utils {
       return "Newcastle";
     } else if (name === "West Ham United") {
       return "West Ham";
+    } else if (name === "Sheffield United") {
+      return "Sheffield U";
+    } else if (name === "Norwich City") {
+      return "Norwich";
     } else {
       return name;
     }
@@ -142,10 +146,11 @@ export default class Utils {
       .map(s => s.slice(0, 1).toUpperCase() + s.slice(1).toLowerCase())
       .join(' ');
   }
-}
 
-export const apiUrl = 'http://localhost:8080/';
-// export const apiUrl = 'https://premierpredictor.herokuapp.com/';
+  static stripAuthToken(token) {
+    return token.replace("Bearer ", "");
+  }
+}
 
 export interface RequestOptions {
   headers?: HttpHeaders | { [header: string]: string | Array<string> };

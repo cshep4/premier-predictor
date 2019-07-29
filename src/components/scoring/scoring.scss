@@ -16,4 +16,10 @@ scoring {
   .text {
     font-size: 3vw;
   }
+
+  @media screen and (min-width: 467px) {
+    .text {
+      font-size: 14px;
+    }
+  }
 }

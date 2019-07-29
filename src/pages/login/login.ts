@@ -49,7 +49,7 @@ export class LoginPage {
           this.navCtrl.popToRoot();
       }, (err) => {
           this.loading.dismiss();
-          Utils.presentToast("Error logging in", this.toastCtrl);
+          Utils.presentToast("Error logging in, please try again", this.toastCtrl);
       });
   }
 

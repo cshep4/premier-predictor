@@ -2,7 +2,8 @@ import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/map';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import UserUtils from "../utils/user-utils";
-import {apiUrl, RequestOptions} from "../utils/utils";
+import {RequestOptions} from "../utils/utils";
+import {coreUrl} from "../utils/urls";
 
 @Injectable()
 export class AuthService {
@@ -13,7 +14,7 @@ export class AuthService {
         const headers = new HttpHeaders().set("Content-Type", 'application/json');
         const options: RequestOptions = { headers: headers, observe: "response" };
 
-        this.http.post(apiUrl+'login', JSON.stringify(credentials), options)
+        this.http.post(coreUrl+'login', JSON.stringify(credentials), options)
           .subscribe(res => {
               resolve(res);
           }, (err) => {
@@ -32,11 +33,11 @@ export class AuthService {
           const headers = new HttpHeaders().set("Content-Type", 'application/json');
           const options: RequestOptions = { headers: headers, observe: "response" };
 
-          this.http.post(apiUrl+'users/sign-up', JSON.stringify(data), options)
+          this.http.post(coreUrl+'users/sign-up', JSON.stringify(data), options)
             .subscribe(res => {
                 resolve(res);
             }, (err) => {
-                reject("Error registering");
+                reject("Error registering, please try again");
             });
       });
   }
@@ -45,7 +46,7 @@ export class AuthService {
       return new Promise((resolve, reject) => {
             const headers = new HttpHeaders().set('X-Auth-Token', token);
             const options: RequestOptions = { headers: headers, observe: "response" };
-            this.http.post(apiUrl+'users/logout', {}, options)
+            this.http.post(coreUrl+'users/logout', {}, options)
               .subscribe(res => {
                   resolve(res);
               }, (err) => {
@@ -63,7 +64,7 @@ export class AuthService {
 
       const headers = new HttpHeaders().set("Content-Type", 'application/json');
       const options: RequestOptions = { headers: headers, observe: "response" };
-      this.http.post(apiUrl+'users/sendResetPassword', email, options)
+      this.http.post(coreUrl+'users/sendResetPassword', email, options)
         .subscribe(res => {
           resolve(res);
         }, (err) => {
@@ -77,7 +78,7 @@ export class AuthService {
       const body = token;
       const options: RequestOptions = { observe: "response" };
 
-      this.http.put(apiUrl+'token/used', body, options)
+      this.http.put(coreUrl+'token/used', body, options)
         .subscribe(res => {
           resolve(res);
         }, (err) => {

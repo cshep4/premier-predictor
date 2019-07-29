@@ -2,7 +2,9 @@ import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/map';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AuthService} from "./auth-service";
-import {apiUrl, RequestOptions} from "../utils/utils";
+import {RequestOptions} from "../utils/utils";
+import {fixtureUrl, liveMatchUrl, predictionUrl} from "../utils/urls";
+import Utils from "../utils/utils";
 
 @Injectable()
 export class MatchService {
@@ -13,14 +15,16 @@ export class MatchService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
 
-      const url = apiUrl + 'predictions/' + id;
+      const url = predictionUrl + 'predictions/' + id;
 
       this.http.get(url, options).subscribe(res => {
           resolve(res);
         }, (err) => {
+        console.log(err);
           reject(err);
         });
     });
@@ -30,10 +34,11 @@ export class MatchService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
 
-      const url = apiUrl + 'predictions/update';
+      const url = predictionUrl + 'predictions';
 
       this.http.post(url, JSON.stringify(predictions), options).subscribe(res => {
           resolve(res);
@@ -47,10 +52,11 @@ export class MatchService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
 
-      const url = apiUrl + 'predictions/summary/' + id;
+      const url = predictionUrl + 'predictions/summary/' + id;
 
       this.http.get(url, options).subscribe(res => {
         resolve(res);
@@ -64,12 +70,14 @@ export class MatchService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
 
-      const url = apiUrl + 'fixtures';
+      const url = fixtureUrl;
 
       this.http.get(url, options).subscribe(res => {
+        console.log(res);
         resolve(res);
       }, (err) => {
         reject(err);
@@ -81,10 +89,11 @@ export class MatchService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
 
-      const url = apiUrl + 'fixtures/upcoming';
+      const url = liveMatchUrl + 'upcoming';
 
       this.http.get(url, options).subscribe(res => {
         resolve(res);
@@ -94,14 +103,16 @@ export class MatchService {
     });
   }
 
+  //Not used
   retrieveUpdatedMatchScore(token, matchId) {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
 
-      const url = apiUrl + 'fixtures/liveScore/' + matchId;
+      const url = fixtureUrl + 'fixtures/liveScore/' + matchId;
 
       this.http.get(url, options).subscribe(res => {
         resolve(res);
@@ -111,14 +122,16 @@ export class MatchService {
     });
   }
 
+  //Not used
   retrieveMatchStats(token, matchId) {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
       const options: RequestOptions = { headers: headers, observe: "response" };
 
-      const url = apiUrl + 'live/' + matchId;
+      const url = liveMatchUrl + 'live/' + matchId;
 
       this.http.get(url, options).subscribe(res => {
         resolve(res);
@@ -132,11 +145,12 @@ export class MatchService {
     return new Promise((resolve, reject) => {
       const headers = new HttpHeaders()
         .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
+        .set("X-Auth-Token", token)
+        .set("Authorization", Utils.stripAuthToken(token));
 
       const options: RequestOptions = { headers: headers, observe: "response" };
 
-      const url = apiUrl + 'live/summary/' + matchId + '/' + userId;
+      const url = liveMatchUrl + 'match/' + matchId + '/user/' + userId;
 
       this.http.get(url, options).subscribe(res => {
         resolve(res);

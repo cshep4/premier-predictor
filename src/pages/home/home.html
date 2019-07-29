@@ -2,7 +2,7 @@
   <ion-navbar color="prem-purple" class="white-spinner">
     <ion-buttons left>
 
-      <button *ngIf="scoreRetrievable" ion-button [disabled]="!rank" (click)="goToStandingsPage()">
+      <button *ngIf="rank && scoreRetrievable" ion-button [disabled]="!rank" (click)="goToStandingsPage()">
         {{ rank || "" }}
         <ion-spinner *ngIf="!rank"></ion-spinner>
       </button>
@@ -21,39 +21,49 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <div padding><h2 class="title-font">Premier Predictor 18/19</h2></div>
+  <!--<div padding><h2 class="title-font">Premier Predictor 18/19</h2></div>-->
+  <!--<ion-toolbar>-->
+    <!--<ion-title>Premier Predictor 18/19</ion-title>-->
+    <ion-label class="width-100"><span>Premier Predictor 18/19</span></ion-label>
+  <!--</ion-toolbar>-->
 
-  <ion-list>
-    <ion-list class="accordion-list">
-      <!-- RULES -->
-      <ion-list-header class="grey-background" no-lines no-padding no-margin>
-        <!-- Toggle Button -->
-        <button ion-item (click)="toggleSection(rulesDropdown)" detail-none [ngClass]="{'section-active': rulesDropdown.open, 'section': !rulesDropdown.open}">
-          <ion-icon item-left name="arrow-forward" *ngIf="!rulesDropdown.open"></ion-icon>
-          <ion-icon item-left name="arrow-down" *ngIf="rulesDropdown.open"></ion-icon>
-          Rules
-        </button>
+  <ion-card>
+    <ion-list>
+      <ion-list class="accordion-list">
+        <!-- RULES -->
+        <ion-list-header class="grey-background" no-lines no-padding no-margin>
+          <!-- Toggle Button -->
+          <button ion-item (click)="toggleSection(rulesDropdown)" detail-none
+                  [ngClass]="{'section-active': rulesDropdown.open, 'section': !rulesDropdown.open}"
+                  class="margin-bottom-0">
+            <ion-icon item-left name="arrow-forward" *ngIf="!rulesDropdown.open"></ion-icon>
+            <ion-icon item-left name="arrow-down" *ngIf="rulesDropdown.open"></ion-icon>
+            Rules
+          </button>
 
-        <ion-list *ngIf="rulesDropdown.open" no-lines padding>
-          <rules class="remove-header-styling"></rules>
-        </ion-list>
-      </ion-list-header>
+          <ion-list *ngIf="rulesDropdown.open" no-lines padding class="white margin-bottom-0">
+            <rules class="remove-header-styling"></rules>
+          </ion-list>
+        </ion-list-header>
 
-      <!-- SCORING -->
-      <ion-list-header class="grey-background" no-lines no-padding no-margin>
-        <!-- Toggle Button -->
-        <button ion-item (click)="toggleSection(scoringDropdown)" detail-none [ngClass]="{'section-active': scoringDropdown.open, 'section': !scoringDropdown.open}">
-          <ion-icon item-left name="arrow-forward" *ngIf="!scoringDropdown.open"></ion-icon>
-          <ion-icon item-left name="arrow-down" *ngIf="scoringDropdown.open"></ion-icon>
-          Scoring
-        </button>
+        <!-- SCORING -->
+        <ion-list-header class="grey-background" no-lines no-padding no-margin>
+          <!-- Toggle Button -->
+          <button ion-item (click)="toggleSection(scoringDropdown)" detail-none
+                  [ngClass]="{'section-active': scoringDropdown.open, 'section': !scoringDropdown.open}"
+                  class="margin-bottom-0">
+            <ion-icon item-left name="arrow-forward" *ngIf="!scoringDropdown.open"></ion-icon>
+            <ion-icon item-left name="arrow-down" *ngIf="scoringDropdown.open"></ion-icon>
+            Scoring
+          </button>
 
-        <ion-list *ngIf="scoringDropdown.open" no-lines padding>
-          <scoring class="remove-header-styling"></scoring>
-        </ion-list>
-      </ion-list-header>
+          <ion-list *ngIf="scoringDropdown.open" no-lines padding class="white margin-bottom-0">
+            <scoring class="remove-header-styling"></scoring>
+          </ion-list>
+        </ion-list-header>
+      </ion-list>
     </ion-list>
-  </ion-list>
+  </ion-card>
 
   <ion-card>
     <ion-card-header class="header-colour" (tap)="goToPredictorPage()">
@@ -73,10 +83,11 @@
           <ion-item *ngFor="let match of item.matches" (tap)="goToMatchPage(match.id)" class="border-line">
             <ion-row class="v-center">
               <ion-col col-2-5 class="team-name remove-header-styling">
-                {{ getTeamName(match.localteam_name)  || "TBC" }}
+                {{ getTeamName(match.localteam_name) || "TBC" }}
               </ion-col>
               <ion-col col-2>
-                <img *ngIf="match.localteam_name" src="assets/img/{{match.localteam_name}}.png" class="flag" align="top">
+                <img *ngIf="match.localteam_name" src="assets/img/{{match.localteam_name}}.png" class="flag"
+                     align="top">
               </ion-col>
 
               <!-- MATCH TIME - START -->
@@ -89,7 +100,7 @@
                        class="team-name"
                        [ngStyle]="{'color': match.status != 'FT' && match.status != 'HT' ? 'red' : 'black'}"
                        *ngIf="match.status">
-                {{ getTeamName(match.localteam_score)  || 0 }}
+                {{ getTeamName(match.localteam_score) || 0 }}
               </ion-col>
               <ion-col col-1
                        class="team-name"
@@ -101,15 +112,16 @@
                        class="team-name"
                        [ngStyle]="{'color': match.status != 'FT' && match.status != 'HT' ? 'red' : 'black'}"
                        *ngIf="match.status">
-                {{ getTeamName(match.visitorteam_score)  || 0 }}
+                {{ getTeamName(match.visitorteam_score) || 0 }}
               </ion-col>
               <!-- LIVE MATCH - END -->
 
               <ion-col col-2>
-                <img *ngIf="match.visitorteam_name" src="assets/img/{{match.visitorteam_name}}.png" class="flag" align="top">
+                <img *ngIf="match.visitorteam_name" src="assets/img/{{match.visitorteam_name}}.png" class="flag"
+                     align="top">
               </ion-col>
               <ion-col col-2-5 class="team-name remove-header-styling">
-                {{ getTeamName(match.visitorteam_name)  || "TBC" }}
+                {{ getTeamName(match.visitorteam_name) || "TBC" }}
               </ion-col>
             </ion-row>
           </ion-item>

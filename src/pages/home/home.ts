@@ -1,6 +1,6 @@
 import {Component, Inject} from '@angular/core';
 import {NavController, Platform} from 'ionic-angular';
-import Utils, {apiUrl} from "../../utils/utils";
+import Utils from "../../utils/utils";
 import MatchUtils from "../../utils/match-utils";
 import {ScoreService} from "../../providers/score-service";
 import {MatchService} from "../../providers/match-service";
@@ -18,6 +18,8 @@ import {HttpHeaders} from "@angular/common/http";
 import {NotificationService} from "../../providers/notification-service";
 import {MatchPage} from "../match/match";
 import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
+import {apiUrl} from "../../utils/urls";
+import {LiveMatchService} from "../../providers/grpc/live";
 
 @Component({
   selector: 'page-home',
@@ -52,7 +54,8 @@ export class HomePage {
               private adService: AdService,
               private notificationService: NotificationService,
               private plt: Platform,
-              private firebaseAnalytics: FirebaseAnalytics) {
+              private firebaseAnalytics: FirebaseAnalytics,
+              private liveMatchService: LiveMatchService) {
     this.adService.initAd();
     this.displayType = "scoring";
 
@@ -96,11 +99,11 @@ export class HomePage {
                   this.data = result;
 
                   this.score = "Pts: " + this.data.body.score;
-                  this.rank = "Rank: " + this.data.body.rank;
+                  // this.rank = "Rank: " + 0;//this.data.body.rank;
                   this.scoreRetrievable = true;
 
-                  let token = this.data.headers.get('X-Auth-Token');
-                  this.storage.set('token', token);
+                  // let token = this.data.headers.get('X-Auth-Token');
+                  // this.storage.set('token', token);
                 }, (err) => {
                   if (refresher) {
                     refresher.complete();
@@ -123,6 +126,8 @@ export class HomePage {
 
   private loadUpcomingMatches(refresher?) {
     this.storage.get('token').then((token) => {
+      this.liveMatchService.getUpcomingMatches(token);
+      
       this.matchService.retrieveUpcomingMatches(token).then((result) => {
         if (refresher) {
           refresher.complete();
@@ -155,10 +160,10 @@ export class HomePage {
           this.initializeWebSocketConnection();
         }
 
-        console.log(this.upcomingMatches);
+        // console.log(this.upcomingMatches);
 
-        let token = this.data.headers.get('X-Auth-Token');
-        this.storage.set('token', token);
+        // let token = this.data.headers.get('X-Auth-Token');
+        // this.storage.set('token', token);
       }, (err) => {
         if (refresher) {
           refresher.complete();
@@ -246,8 +251,8 @@ export class HomePage {
 
           this.leaguesRetrievable = true;
 
-          let token = this.data.headers.get('X-Auth-Token');
-          this.storage.set('token', token);
+          // let token = this.data.headers.get('X-Auth-Token');
+          // this.storage.set('token', token);
         }, (err) => {
           if (refresher) {
             refresher.complete();

@@ -24,7 +24,7 @@ export class LeagueTable {
 
   private calculate() {
     this.matches
-      .filter(it => it.hGoals !== null && it.aGoals !== null)
+      .filter(it => it.hGoals && it.aGoals)
       .forEach(it => this.updateTableForMatch(it));
 
     this.sortTable();

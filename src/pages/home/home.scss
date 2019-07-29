@@ -27,7 +27,7 @@ page-home {
   }
 
   .accordion-list {
-    background: color($colors, light);
+    //background: color($colors, light);
     height: 100%;
   }
   .section {
@@ -41,12 +41,12 @@ page-home {
   }
 
   .child {
-    background: #e8e7e6;
+    //background: #e8e7e6;
     color: #000;
     margin-bottom: 4px;
   }
   .child-item {
-    background: #f3f2f1;
+    //background: #f3f2f1;
     padding: 10px;
   }
   .label {
@@ -54,6 +54,10 @@ page-home {
   }
   .list {
     margin-bottom: 4px;
+  }
+
+  .margin-bottom-0 {
+    margin-bottom: 0 !important;
   }
 
   .dashed-bottom {
@@ -164,5 +168,18 @@ page-home {
 
   .grey-background {
     background-color: #f4f4f4;
+  }
+
+  .width-100 {
+    width: 100%!important;
+    background-color: color($colors, dark-grey)!important;
+    font-weight: 900!important;
+    color: white!important;
+    padding: 8px !important;
+    font-size: 1.8rem!important;
+  }
+
+  .white {
+    background-color: white!important;
   }
 }

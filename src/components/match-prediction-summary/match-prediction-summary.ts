@@ -101,6 +101,8 @@ export class MatchPredictionSummary implements OnChanges {
           return;
         }
 
+        this.prediction.hGoals = Number(this.prediction.hGoals);
+        this.prediction.aGoals = Number(this.prediction.aGoals);
         const predictions = [this.prediction];
 
         this.matchService.savePredictions(token, predictions).then((result) => {
@@ -111,10 +113,8 @@ export class MatchPredictionSummary implements OnChanges {
 
           this.data = result;
 
-          this.prediction.id = this.data.body[0].id;
-
-          const token = this.data.headers.get('X-Auth-Token');
-          this.storage.set('token', token);
+          // const token = this.data.headers.get('X-Auth-Token');
+          // this.storage.set('token', token);
         }, (err) => {
           this.loading.dismiss();
           Utils.presentToast("Error saving predictions, please try again", this.toastCtrl);

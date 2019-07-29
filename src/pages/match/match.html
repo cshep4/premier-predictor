@@ -67,17 +67,17 @@
         </ion-col>
       </ion-row>
       <!-- FORMS - START -->
-      <ion-row  text-center class="v-center">
-        <ion-col col-4 class="h-center team">
-          <form-icons [side]="'left'" [forms]="forms[match.localteam_name].form"></form-icons>
-        </ion-col>
-        <ion-col col-4 class="h-center team">
-          Last Five Games
-        </ion-col>
-        <ion-col col-4 class="h-center team">
-          <form-icons [side]="'right'" [forms]="forms[match.visitorteam_name].form"></form-icons>
-        </ion-col>
-      </ion-row>
+      <!--<ion-row  text-center class="v-center">-->
+        <!--<ion-col col-4 class="h-center team">-->
+          <!--<form-icons [side]="'left'" [forms]="forms[match.localteam_name].form"></form-icons>-->
+        <!--</ion-col>-->
+        <!--<ion-col col-4 class="h-center team">-->
+          <!--Last Five Games-->
+        <!--</ion-col>-->
+        <!--<ion-col col-4 class="h-center team">-->
+          <!--<form-icons [side]="'right'" [forms]="forms[match.visitorteam_name].form"></form-icons>-->
+        <!--</ion-col>-->
+      <!--</ion-row>-->
       <!-- FORMS - END -->
     </ion-list>
   </ion-card>
@@ -128,7 +128,7 @@
           Match Events
         </button>
 
-        <ion-list *ngIf="eventsDropdown.open && match.events.length > 0" no-lines padding padding-vertical>
+        <ion-list *ngIf="eventsDropdown.open && match.events && match.events.length > 0" no-lines padding padding-vertical>
           <match-events [events]="match.events" class="remove-header-styling"></match-events>
         </ion-list>
       </ion-list-header>

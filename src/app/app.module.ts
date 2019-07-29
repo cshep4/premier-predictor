@@ -48,6 +48,8 @@ import {Lineup} from "../components/lineup/lineup";
 import {MatchEvents} from "../components/match-events/match-events";
 import {Commentary} from "../components/commentary/commentary";
 import {FormIcons} from "../components/form-icons/form-icons";
+import { StatusBar } from '@ionic-native/status-bar/ngx';
+import {LiveMatchService} from '../providers/grpc/live';
 
 @NgModule({
   declarations: [
@@ -109,6 +111,7 @@ import {FormIcons} from "../components/form-icons/form-icons";
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    LiveMatchService,
     AuthService,
     MatchService,
     TournamentService,
@@ -125,7 +128,8 @@ import {FormIcons} from "../components/form-icons/form-icons";
     InAppPurchase,
     AdService,
     NotificationService,
-    FirebaseAnalytics
+    FirebaseAnalytics,
+    StatusBar
   ]
 })
 export class AppModule {}

@@ -1,5 +1,5 @@
 export class LeagueTablePlayer {
-  id : number;
+  id : string;
   firstName : string;
   surname : string;
   predictedWinner : string;

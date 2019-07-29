@@ -53,8 +53,8 @@ export class RegisterPage {
                 this.loading.dismiss();
 
                 this.data = result;
-                const token = this.data.headers.get('X-Auth-Token');
-                await this.storage.set('token', token);
+                // const token = this.data.headers.get('X-Auth-Token');
+                // await this.storage.set('token', token);
 
                 const userId = this.data.headers.get('userId');
                 this.firebaseAnalytics.setUserId(userId);
@@ -65,7 +65,7 @@ export class RegisterPage {
 
             }, (err) => {
                 this.loading.dismiss();
-                Utils.presentToast("Error logging in", this.toastCtrl);
+                Utils.presentToast("Error logging in, please try again", this.toastCtrl);
             });
 
         }, (err) => {
