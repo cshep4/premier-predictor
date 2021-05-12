@@ -55,7 +55,7 @@
         "cordova-wheel-selector-plugin": "^1.1.1",
         "font-awesome": "^4.7.0",
         "google-protobuf": "^3.9.0",
-        "grpc": "^1.5.0",
+        "grpc": "^1.24.9",
         "grpc-web": "^1.0.5",
         "ionic-angular": "^3.9.2",
         "ionic-native": "2.9.0",
