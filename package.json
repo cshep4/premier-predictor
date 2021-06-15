@@ -29,7 +29,7 @@
         "@ionic/storage": "2.1.3",
         "android-versions": "^1.3.0",
         "angular2-number-picker": "^0.8.8",
-        "chart.js": "^2.7.2",
+        "chart.js": "^2.9.4",
         "cordova-admob-sdk": "^0.17.0",
         "cordova-android": "7.1.4",
         "cordova-android-support-gradle-release": "^1.4.2",
