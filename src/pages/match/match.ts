@@ -4,15 +4,11 @@ import Utils from "../../utils/utils";
 import {Clipboard} from "@ionic-native/clipboard";
 import {Storage} from "@ionic/storage";
 import {AdService} from "../../providers/ad-service";
-import * as Stomp from 'stompjs';
-import * as SockJS from 'sockjs-client';
-import {HttpHeaders} from "@angular/common/http";
 import {MatchService} from "../../providers/match-service";
 import {MatchFacts} from "../../models/MatchFacts";
 import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
 import {Prediction} from "../../models/Prediction";
 import {PredictionSummary} from "../../models/PredictionSummary";
-import {apiUrl} from "../../utils/urls";
 
 @Component({
   selector: 'page-match',
@@ -34,10 +30,6 @@ export class MatchPage {
   commentaryDropdown = {open: false};
   lineupDropdown = {open: false};
   predictionDropdown = {open: false};
-
-  private serverUrl = apiUrl + 'socket';
-  private stompClient;
-  private isConnected = false;
 
   toggleSection = Utils.toggleSection;
 
@@ -61,19 +53,6 @@ export class MatchPage {
     });
     this.adService.initAd();
     this.loadMatch();
-  }
-
-  ionViewWillUnload() {
-    this.disconnectFromSubscription();
-  }
-
-  private disconnectFromSubscription() {
-    if (this.isConnected) {
-      this.stompClient.unsubscribe("/live/" + this.matchId);
-      this.stompClient.disconnect();
-    }
-
-    this.isConnected = false;
   }
 
   ionViewDidEnter() {
@@ -142,10 +121,6 @@ export class MatchPage {
 
         // this.forms = this.data.body.forms;
 
-        if (!this.isConnected) {
-          this.initializeWebSocketConnection();
-        }
-
         if (refresher) {
           this.predictionDropdown.open = false;
         }
@@ -167,61 +142,6 @@ export class MatchPage {
   private toDateTime(match) {
     const dateTime = match.formatted_date + ' ' + match.time;
     return this.moment.utc(dateTime, 'DD.MM.YYYY HH:mm').format();
-  }
-
-  private initializeWebSocketConnection() {
-    this.storage.get('token').then((token) => {
-      let ws = new SockJS(this.serverUrl);
-      this.stompClient = Stomp.over(ws);
-      let self = this;
-
-      const headers = new HttpHeaders()
-        .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
-
-      this.stompClient.connect({}, function (frame) {
-        self.isConnected = true;
-        self.stompClient.subscribe("/live/" + self.matchId, (matches) => {
-          if (matches.body) {
-            const m: any = JSON.parse(matches.body);
-            self.updateMatch(m);
-          }
-        }, headers);
-      });
-    });
-  }
-
-  private updateMatch(match) {
-    if (this.matchId === match.id) {
-      this.match = <MatchFacts>({
-        id: match.id,
-        comp_id: match.comp_id,
-        formatted_date: match.formatted_date,
-        season: match.season,
-        week: match.week,
-        venue: match.venue,
-        venue_id: match.venue_id,
-        venue_city: match.venue_city,
-        status: match.status,
-        timer: match.timer,
-        time: match.time,
-        localteam_id: match.localteam_id,
-        localteam_name: match.localteam_name,
-        localteam_score: match.localteam_score,
-        visitorteam_id: match.visitorteam_id,
-        visitorteam_name: match.visitorteam_name,
-        visitorteam_score: match.visitorteam_score,
-        ht_score: match.ht_score,
-        ft_score: match.ft_score,
-        et_score: match.et_score,
-        penalty_local: match.penalty_local,
-        penalty_visitor: match.penalty_visitor,
-        events: match.events,
-        commentary: match.commentary
-      });
-
-      this.match.dateTime = this.toDateTime(this.match);
-    }
   }
 
   getTimer(match) {

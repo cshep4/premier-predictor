@@ -8,6 +8,7 @@ import Utils from "../../utils/utils";
   templateUrl: 'league-table.html'
 })
 export class LeagueTable {
+  @Input() matchPredicate: (f: any) => boolean;
   @Input() matches: any;
   table: any;
   getTeamName = Utils.getTeamName;
@@ -24,7 +25,7 @@ export class LeagueTable {
 
   private calculate() {
     this.matches
-      .filter(it => it.hGoals && it.aGoals)
+      .filter(it => this.matchPredicate(it))
       .forEach(it => this.updateTableForMatch(it));
 
     this.sortTable();

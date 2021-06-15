@@ -3,7 +3,7 @@ import 'rxjs/add/operator/map';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import UserUtils from "../utils/user-utils";
 import {RequestOptions} from "../utils/utils";
-import {coreUrl} from "../utils/urls";
+import {coreUrl, legacyUrl, userUrl} from "../utils/urls";
 
 @Injectable()
 export class AuthService {
@@ -14,12 +14,31 @@ export class AuthService {
         const headers = new HttpHeaders().set("Content-Type", 'application/json');
         const options: RequestOptions = { headers: headers, observe: "response" };
 
-        this.http.post(coreUrl+'login', JSON.stringify(credentials), options)
-          .subscribe(res => {
+      this.http.post(coreUrl + 'login', JSON.stringify(credentials), options)
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          this.http.post(legacyUrl+'login', JSON.stringify(credentials), options)
+            .subscribe(res => {
               resolve(res);
-          }, (err) => {
+            }, (err) => {
               reject(err);
-          });
+            });
+        });
+    });
+  }
+
+  storeLegacyUser(user) {
+    return new Promise((resolve, reject) => {
+      const headers = new HttpHeaders().set("Content-Type", 'application/json');
+      const options: RequestOptions = { headers: headers, observe: "response" };
+
+      this.http.post(userUrl + 'legacy', JSON.stringify(user), options)
+        .subscribe(res => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
     });
   }
 

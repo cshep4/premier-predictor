@@ -137,7 +137,7 @@
     </ion-list>
 
     <ion-list *ngSwitchCase="'table'">
-      <league-table [matches]="matches"></league-table>
+      <league-table [matchPredicate]="leagueTablePredicate" [matches]="matches"></league-table>
     </ion-list>
   </div>
 

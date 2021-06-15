@@ -1,15 +1,17 @@
 // export const apiUrl = 'http://localhost:8080/';
-export const apiUrl = 'https://app.premierpredictor.uk/';
+export const baseUrl = 'https://premierpredictor.uk/';
+export const apiUrl = 'https://premierpredictor.uk/';
 // export const apiUrl = 'https://premierpredictor.herokuapp.com/';
 
-export const coreUrl = 'https://app.premierpredictor.uk/';
-export const chatUrl = 'chat.premierpredictor.uk';
-export const fixtureUrl = 'https://fixture.premierpredictor.uk/';
-export const leagueUrl = 'https://league.premierpredictor.uk/';
-export const liveMatchUrl = 'https://livematch.premierpredictor.uk/';
-export const notificationUrl = 'https://notification.premierpredictor.uk/';
-export const predictionUrl = 'https://prediction.premierpredictor.uk/';
-export const userUrl = 'https://user.premierpredictor.uk/';
+export const coreUrl = baseUrl;
+export const chatUrl = baseUrl + "chat/";
+export const fixtureUrl = baseUrl + "fixtures/";
+export const leagueUrl = baseUrl + "league/";
+export const liveMatchUrl = baseUrl + 'live/';
+export const notificationUrl = baseUrl + 'notification/';
+export const predictionUrl = baseUrl + 'predictions/';
+export const userUrl = baseUrl + 'user/';
+export const legacyUrl = baseUrl + 'legacy/';
 
 // export const coreUrl = 'http://localhost:8080';
 // export const chatUrl = 'http://localhost:3001';

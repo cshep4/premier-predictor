@@ -126,6 +126,7 @@ export class PredictorPage {
             this.convertDateToLocalTime();
             this.matches.sort(MatchUtils.compareDate);
 
+            console.log(this.matches);
             if (this.data.body.forms != null) {
               this.forms = this.data.body.forms;
             }
@@ -289,5 +290,9 @@ export class PredictorPage {
       this.week = this.matches.filter(item => item.dateTime >= Date.now())[0].matchday;
     }
     this.filterargs = {week: this.week};
+  }
+
+  private leagueTablePredicate(f: PredictedMatch): boolean {
+    return f.hGoals !== null && f.aGoals !== null && f.hGoals !== undefined && f.aGoals !== undefined;
   }
 }

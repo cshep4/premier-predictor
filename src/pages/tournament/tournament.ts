@@ -10,6 +10,7 @@ import {Match} from "../../models/Match";
 import {AdService} from "../../providers/ad-service";
 import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
 import {MatchPage} from "../match/match";
+import {PredictedMatch} from "../../models/PredictedMatch";
 
 @Component({
   selector: 'page-tournament',
@@ -196,5 +197,9 @@ export class TournamentPage {
 
   private goToMatchPage(matchId) {
     this.navCtrl.push(MatchPage, { 'matchId': matchId });
+  }
+
+  private leagueTablePredicate(f: Match): boolean {
+    return f.played == 1;
   }
 }

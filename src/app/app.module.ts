@@ -49,7 +49,6 @@ import {MatchEvents} from "../components/match-events/match-events";
 import {Commentary} from "../components/commentary/commentary";
 import {FormIcons} from "../components/form-icons/form-icons";
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import {LiveMatchService} from '../providers/grpc/live';
 
 @NgModule({
   declarations: [
@@ -111,7 +110,6 @@ import {LiveMatchService} from '../providers/grpc/live';
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    LiveMatchService,
     AuthService,
     MatchService,
     TournamentService,

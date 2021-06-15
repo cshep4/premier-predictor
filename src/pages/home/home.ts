@@ -12,14 +12,9 @@ import {Storage} from "@ionic/storage";
 import {AdService} from "../../providers/ad-service";
 import {Subscription} from "rxjs/Subscription";
 import 'rxjs/add/observable/interval';
-import * as Stomp from 'stompjs';
-import * as SockJS from 'sockjs-client';
-import {HttpHeaders} from "@angular/common/http";
 import {NotificationService} from "../../providers/notification-service";
 import {MatchPage} from "../match/match";
 import {FirebaseAnalytics} from "@ionic-native/firebase-analytics";
-import {apiUrl} from "../../utils/urls";
-import {LiveMatchService} from "../../providers/grpc/live";
 
 @Component({
   selector: 'page-home',
@@ -40,10 +35,6 @@ export class HomePage {
   liveUpdates: Map<String, Subscription> = new Map();
   toggleSection = Utils.toggleSection;
 
-  private serverUrl = apiUrl + 'socket';
-  private stompClient;
-  private isConnected = false;
-
   constructor(private navCtrl: NavController,
               private scoreService: ScoreService,
               private storage: Storage,
@@ -54,8 +45,7 @@ export class HomePage {
               private adService: AdService,
               private notificationService: NotificationService,
               private plt: Platform,
-              private firebaseAnalytics: FirebaseAnalytics,
-              private liveMatchService: LiveMatchService) {
+              private firebaseAnalytics: FirebaseAnalytics) {
     this.adService.initAd();
     this.displayType = "scoring";
 
@@ -126,8 +116,6 @@ export class HomePage {
 
   private loadUpcomingMatches(refresher?) {
     this.storage.get('token').then((token) => {
-      this.liveMatchService.getUpcomingMatches(token);
-      
       this.matchService.retrieveUpcomingMatches(token).then((result) => {
         if (refresher) {
           refresher.complete();
@@ -155,12 +143,6 @@ export class HomePage {
         this.notificationService.createNotifications(this.upcomingMatches);
 
         this.matchesRetrievable = true;
-
-        if (!this.isConnected) {
-          this.initializeWebSocketConnection();
-        }
-
-        // console.log(this.upcomingMatches);
 
         // let token = this.data.headers.get('X-Auth-Token');
         // this.storage.set('token', token);
@@ -190,29 +172,6 @@ export class HomePage {
   private toDateTime(match) {
     const dateTime = match.formatted_date + ' ' + match.time;
     return this.moment.utc(dateTime, 'DD.MM.YYYY HH:mm').format();
-  }
-
-  private initializeWebSocketConnection() {
-    this.storage.get('token').then((token) => {
-      let ws = new SockJS(this.serverUrl);
-      this.stompClient = Stomp.over(ws);
-      let self = this;
-
-      const headers = new HttpHeaders()
-        .set("Content-Type", 'application/json')
-        .set("X-Auth-Token", token);
-
-      this.stompClient.connect({}, function (frame) {
-        self.stompClient.subscribe("/upcoming", (matches) => {
-          if (matches.body) {
-            const m: any[] = JSON.parse(matches.body);
-            m.forEach((match) => { self.updateMatch(match); });
-          }
-
-          self.isConnected = true;
-        }, headers);
-      });
-    });
   }
 
   private updateMatch(match) {
